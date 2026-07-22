@@ -69,6 +69,8 @@ class CyberSportApp {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
           entry.target.classList.add('visible');
+          const stagger = entry.target.querySelector('.reveal-stagger');
+          if (stagger) stagger.classList.add('visible');
           observer.unobserve(entry.target);
         }
       });
