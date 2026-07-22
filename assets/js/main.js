@@ -13,6 +13,11 @@ class CyberSportApp {
     this.initCopyButtons();
     this.initToggles();
     this.initFAQ();
+    this.renderStats();
+    this.renderGiveaways();
+    this.renderTestimonials();
+    this.renderFAQ();
+    this.renderLeaderboard();
   }
 
   initLucideIcons() {
@@ -201,6 +206,189 @@ class CyberSportApp {
         });
       }
     });
+  }
+
+  renderStats() {
+    const containers = document.querySelectorAll('[data-stats]');
+    if (!containers.length || !window.DataStore) return;
+
+    const stats = window.DataStore.getStats();
+
+    const formatNumber = (n) => {
+      if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+      if (n >= 1000) return n.toLocaleString('ru-RU');
+      return String(n);
+    };
+
+    containers.forEach(container => {
+      container.innerHTML = `
+        <div class="stat-item">
+          <div class="stat-number">${formatNumber(stats.players)}+</div>
+          <div class="stat-label">Игроков</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">$${formatNumber(stats.bonusesPaid)}+</div>
+          <div class="stat-label">Раздано бонусов</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">${stats.clans}</div>
+          <div class="stat-label">Клана</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">24/7</div>
+          <div class="stat-label">Активность</div>
+        </div>
+      `;
+    });
+  }
+
+  renderGiveaways() {
+    const containers = document.querySelectorAll('[data-giveaways]');
+    if (!containers.length || !window.DataStore) return;
+
+    const giveaways = window.DataStore.getGiveaways();
+
+    containers.forEach(container => {
+      if (giveaways.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">🎁</div>
+            <h3>Нет активных розыгрышей</h3>
+            <p>Следите за обновлениями — новые розыгрыши появляются каждую неделю.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = giveaways.map(g => {
+        const daysLeft = Math.ceil((g.endDate - new Date()) / (1000 * 60 * 60 * 24));
+        return `
+          <div class="giveaway-card">
+            <div class="giveaway-header">
+              <h3>${g.title}</h3>
+              <span class="status-badge">Активен</span>
+            </div>
+            <p class="giveaway-desc">${g.description}</p>
+            <div class="giveaway-timer">
+              <i data-lucide="clock" style="width: 15px; height: 15px;"></i>
+              <span>${daysLeft}д осталось</span>
+            </div>
+            <a href="#" class="btn-primary" style="font-size: 0.875rem; padding: 0.625rem 1.5rem;">Участвовать</a>
+          </div>
+        `;
+      }).join('');
+    });
+
+    this.initLucideIcons();
+  }
+
+  renderTestimonials() {
+    const containers = document.querySelectorAll('[data-testimonials]');
+    if (!containers.length || !window.DataStore) return;
+
+    const testimonials = window.DataStore.getTestimonials();
+
+    containers.forEach(container => {
+      container.innerHTML = testimonials.map(t => {
+        const fullStars = Math.floor(t.stars);
+        const hasHalf = t.stars % 1 !== 0;
+        let stars = '';
+        for (let i = 0; i < fullStars; i++) {
+          stars += '<i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>';
+        }
+        if (hasHalf) {
+          stars += '<i data-lucide="star-half" style="width: 16px; height: 16px; fill: currentColor;"></i>';
+        }
+        return `
+          <div class="testimonial-card">
+            <div class="testimonial-stars">${stars}</div>
+            <p class="testimonial-text">«${t.text}»</p>
+            <div class="testimonial-author">
+              <div class="testimonial-avatar">${t.avatar}</div>
+              <div>
+                <div class="testimonial-name">${t.name}</div>
+                <div class="testimonial-role">${t.role}</div>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    });
+
+    this.initLucideIcons();
+  }
+
+  renderFAQ() {
+    const containers = document.querySelectorAll('[data-faq]');
+    if (!containers.length || !window.DataStore) return;
+
+    const faq = window.DataStore.getFAQ();
+
+    containers.forEach(container => {
+      container.innerHTML = faq.map((item, idx) => `
+        <div class="faq-item ${idx === 0 ? 'open' : ''}">
+          <button class="faq-question">
+            <span>${item.q}</span>
+            <i data-lucide="chevron-down" class="faq-icon" style="width: 18px; height: 18px;"></i>
+          </button>
+          <div class="faq-answer">
+            <div class="faq-answer-inner">${item.a}</div>
+          </div>
+        </div>
+      `).join('');
+    });
+
+    this.initLucideIcons();
+    this.initFAQ();
+  }
+
+  renderLeaderboard() {
+    const containers = document.querySelectorAll('[data-leaderboard]');
+    if (!containers.length || !window.DataStore) return;
+
+    const leaderboard = window.DataStore.getLeaderboard();
+
+    containers.forEach(container => {
+      if (leaderboard.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">🏆</div>
+            <h3>Лидерборд пуст</h3>
+            <p>Станьте первым игроком в рейтинге!</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = leaderboard.map(player => {
+        let rankClass = '';
+        if (player.rank === 1) rankClass = 'rank-gold';
+        else if (player.rank === 2) rankClass = 'rank-silver';
+        else if (player.rank === 3) rankClass = 'rank-bronze';
+
+        const changeIcon = player.change === 'up' ? 'trending-up' : player.change === 'down' ? 'trending-down' : 'minus';
+        const changeColor = player.change === 'up' ? '#34d399' : player.change === 'down' ? '#f87171' : 'var(--text-500)';
+
+        return `
+          <div class="leaderboard-row">
+            <div class="lb-rank ${rankClass}">${player.rank}</div>
+            <div class="lb-player">
+              <div class="lb-avatar">${player.avatar}</div>
+              <div>
+                <div class="lb-username">${player.username}</div>
+                <div class="lb-clan">${player.clan}</div>
+              </div>
+            </div>
+            <div class="lb-score">${player.score.toLocaleString('ru-RU')}</div>
+            <div class="lb-change" style="color: ${changeColor};">
+              <i data-lucide="${changeIcon}" style="width: 16px; height: 16px;"></i>
+            </div>
+          </div>
+        `;
+      }).join('');
+    });
+
+    this.initLucideIcons();
   }
 }
 
