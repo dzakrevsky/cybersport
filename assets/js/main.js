@@ -18,6 +18,10 @@ class CyberSportApp {
     this.renderTestimonials();
     this.renderFAQ();
     this.renderLeaderboard();
+    this.renderBonuses();
+    this.renderPartners();
+    this.renderClans();
+    this.renderActivity();
   }
 
   initLucideIcons() {
@@ -389,6 +393,134 @@ class CyberSportApp {
     });
 
     this.initLucideIcons();
+  }
+
+  renderBonuses() {
+    const containers = document.querySelectorAll('[data-bonuses]');
+    if (!containers.length || !window.DataStore) return;
+
+    const bonuses = window.DataStore.getBonuses();
+
+    containers.forEach(container => {
+      if (bonuses.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">🎁</div>
+            <h3>Нет доступных бонусов</h3>
+            <p>Новые бонусы появляются скоро — следите за обновлениями.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = bonuses.map(b => `
+        <div class="bonus-card">
+          <div class="bonus-badge">${b.type.toUpperCase()}</div>
+          <h3 class="bonus-title">${b.title}</h3>
+          <div class="bonus-amount">${b.amount}</div>
+          <p class="bonus-desc">${b.description}</p>
+          <a href="#" class="btn-primary" style="font-size: 0.875rem; padding: 0.625rem 1.5rem;">Получить</a>
+        </div>
+      `).join('');
+    });
+  }
+
+  renderPartners() {
+    const containers = document.querySelectorAll('[data-partners]');
+    if (!containers.length || !window.DataStore) return;
+
+    const partners = window.DataStore.getPartners();
+
+    containers.forEach(container => {
+      if (partners.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">🤝</div>
+            <h3>Нет партнёров</h3>
+            <p>Мы активно работаем над добавлением новых партнёров.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = partners.map(p => `
+        <div class="partner-card">
+          <div class="partner-name">${p.name}</div>
+          <div class="partner-commission">${p.commission} <span>комиссия</span></div>
+          <p class="partner-desc">${p.description}</p>
+          <a href="#" class="btn-ghost" style="font-size: 0.875rem; padding: 0.625rem 1.5rem;">Подробнее</a>
+        </div>
+      `).join('');
+    });
+  }
+
+  renderClans() {
+    const containers = document.querySelectorAll('[data-clans]');
+    if (!containers.length || !window.DataStore) return;
+
+    const clans = window.DataStore.getClans();
+
+    containers.forEach(container => {
+      if (clans.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">⚔️</div>
+            <h3>Кланы ещё не созданы</h3>
+            <p>Станьте основателем первого клана!</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = clans.map(c => `
+        <div class="clan-card">
+          <div class="clan-rank">#${c.rank}</div>
+          <div class="clan-header" style="border-left: 2px solid ${c.color};">
+            <div class="clan-name">
+              <div class="clan-logo" style="background: ${c.color}20; color: ${c.color};">
+                ${c.name.charAt(0)}
+              </div>
+              <div>
+                <h3>${c.name}</h3>
+                <div class="clan-members">${c.members.toLocaleString('ru-RU')} участников</div>
+              </div>
+            </div>
+          </div>
+          <div class="clan-score">
+            <span class="clan-score-label">XP</span>
+            <span class="clan-score-value">${c.score.toLocaleString('ru-RU')}</span>
+          </div>
+          <a href="#" class="btn-ghost" style="width: 100%; justify-content: center; font-size: 0.875rem; padding: 0.625rem 1.5rem;">Присоединиться</a>
+        </div>
+      `).join('');
+    });
+  }
+
+  renderActivity() {
+    const containers = document.querySelectorAll('[data-activity]');
+    if (!containers.length || !window.DataStore) return;
+
+    const activity = window.DataStore.getActivity();
+
+    containers.forEach(container => {
+      if (activity.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state" style="padding: 2rem 1rem;">
+            <div class="empty-state-icon">📋</div>
+            <h3>Нет активности</h3>
+            <p style="font-size: 0.8125rem;">Пока никто не совершал действий.</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = activity.map(a => `
+        <li class="activity-item">
+          <span class="activity-desc"><strong>${a.user}</strong> ${a.action}</span>
+          <span class="activity-time">${a.time}</span>
+        </li>
+      `).join('');
+    });
   }
 }
 
