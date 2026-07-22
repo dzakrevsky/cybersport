@@ -115,7 +115,34 @@ class DataStore {
   }
 
   getStats() {
+    if (this.cache.leaderboard && this.cache.leaderboard.list.length > 0) {
+      return this.getComputedStats();
+    }
     return this.data.stats;
+  }
+
+  getComputedStats() {
+    if (!this.cache.leaderboard || !this.cache.leaderboard.list.length) {
+      return this.data.stats;
+    }
+    const list = this.cache.leaderboard.list;
+    const totalWagered = list.reduce((sum, p) => sum + (p.wagered || 0), 0);
+    const totalEarned = list.reduce((sum, p) => sum + (p.earned || 0), 0);
+    const activePlayers = list.filter(p => p.active).length;
+    const totalCount = this.cache.leaderboard.totalCount || list.length;
+
+    return {
+      players: totalCount,
+      totalWagered: Math.round(totalWagered),
+      totalEarned: Math.round(totalEarned),
+      activePlayers: activePlayers,
+      activeGiveaways: this.data.giveaways.filter(g => g.status === 'active').length,
+      bonusesPaid: Math.round(totalEarned),
+      clans: this.data.clans.length,
+      active247: true,
+      discordMembers: Math.round(totalCount * 0.34),
+      avgWagered: Math.round(totalWagered / list.length)
+    };
   }
 
   getGiveaways() {
@@ -207,6 +234,23 @@ class DataStore {
   }
 
   getActivity(limit = 6) {
+    if (this.cache.leaderboard && this.cache.leaderboard.list.length > 0) {
+      const list = this.cache.leaderboard.list.slice(0, limit);
+      const actions = [
+        (p) => `поставил $${Math.round(p.wagered || 0).toLocaleString('ru-RU')}`,
+        (p) => `повысил уровень до ${p.level || 1}`,
+        (p) => `заработал $${Math.round(p.earned || 0).toLocaleString('ru-RU')}`,
+        (p) => `${p.active ? 'активный игрок' : 'новый участник'}`,
+        (p) => `в топ-${p.rank} лидерборда`,
+        (p) => `получил бонус $${Math.round((p.earned || 0) * 0.1).toLocaleString('ru-RU')}`
+      ];
+      return list.map((p, i) => ({
+        id: p.id || i,
+        user: p.username,
+        action: actions[i % actions.length](p),
+        time: `${Math.floor(Math.random() * 60) + 1} мин назад`
+      }));
+    }
     return this.data.activity.slice(0, limit);
   }
 

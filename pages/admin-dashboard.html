@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru" class="dark">
 <head>
     <meta charset="UTF-8">
@@ -171,32 +171,36 @@
       }
     </script>
     <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
-    <script src="../assets/js/data.js?v=5"></script>
-    <script src="../assets/js/main.js?v=5"></script>
+    <script src="../assets/js/data.js?v=6"></script>
+    <script src="../assets/js/main.js?v=6"></script>
     <script>
-      document.addEventListener('DOMContentLoaded', () => {
+      document.addEventListener('DOMContentLoaded', async () => {
         const store = window.DataStore;
         if (!store) return;
 
-        const stats = store.getStats();
         const formatNum = (n) => {
+          if (!n && n !== 0) return '0';
           if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
           if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
           return n.toLocaleString('ru-RU');
         };
 
-        document.querySelectorAll('.stat-card').forEach((card, i) => {
-          const label = card.querySelector('.stat-card-label')?.textContent;
-          const valueEl = card.querySelector('.stat-card-value');
-          if (!label || !valueEl) return;
-          if (label.includes('игроков')) valueEl.textContent = formatNum(stats.players);
-          else if (label.includes('розыгрыши')) valueEl.textContent = stats.activeGiveaways;
-          else if (label.includes('поставлено')) valueEl.textContent = formatNum(stats.totalWagered);
-          else if (label.includes('Discord')) valueEl.textContent = formatNum(stats.discordMembers);
-        });
+        function renderStats() {
+          const stats = store.getStats();
+          document.querySelectorAll('.stat-card').forEach((card) => {
+            const label = card.querySelector('.stat-card-label')?.textContent;
+            const valueEl = card.querySelector('.stat-card-value');
+            if (!label || !valueEl) return;
+            if (label.includes('игроков')) valueEl.textContent = formatNum(stats.players);
+            else if (label.includes('розыгрыши')) valueEl.textContent = stats.activeGiveaways;
+            else if (label.includes('поставлено')) valueEl.textContent = '$' + formatNum(stats.totalWagered);
+            else if (label.includes('Discord')) valueEl.textContent = formatNum(stats.discordMembers);
+          });
+        }
 
-        const activityList = document.querySelector('.activity-list');
-        if (activityList) {
+        function renderActivity() {
+          const activityList = document.querySelector('.activity-list');
+          if (!activityList) return;
           const activity = store.getActivity();
           activityList.innerHTML = activity.map(a => `
             <li class="activity-item">
@@ -206,18 +210,32 @@
           `).join('');
         }
 
-        const chartRows = document.querySelectorAll('.mini-chart-row');
-        if (chartRows.length) {
-          const days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт'];
-          const base = stats.totalWagered / 5;
-          chartRows.forEach((row, i) => {
+        function renderChart() {
+          const chartRows = document.querySelectorAll('.mini-chart-row');
+          if (!chartRows.length) return;
+          const stats = store.getStats();
+          const base = (stats.totalWagered || 0) / 5;
+          chartRows.forEach((row) => {
             const pct = 40 + Math.random() * 55;
             const val = Math.round(base * (pct / 60));
             const fill = row.querySelector('.mini-chart-bar-fill');
             const valEl = row.querySelector('.mini-chart-value');
             if (fill) fill.style.width = pct + '%';
-            if (valEl) valEl.textContent = formatNum(val);
+            if (valEl) valEl.textContent = '$' + formatNum(val);
           });
+        }
+
+        renderStats();
+        renderActivity();
+        renderChart();
+
+        try {
+          await store.fetchLeaderboard({ take: 20, useCache: true });
+          renderStats();
+          renderActivity();
+          renderChart();
+        } catch (err) {
+          console.warn('Failed to load leaderboard for dashboard:', err.message);
         }
 
         if (typeof lucide !== 'undefined') lucide.createIcons();
