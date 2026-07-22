@@ -1,0 +1,79 @@
+:root {
+  --background-900: #000000;
+  --background-800: #1c1c1e;
+  --background-700: #2c2c2e;
+  --background-600: #48484a;
+  --background-500: #636366;
+  --background-400: #8e8e93;
+  --background-300: #aeaeb2;
+  --background-200: #c7c7cc;
+  --background-100: #e5e5ea;
+  --background-50: #f2f2f7;
+
+  --text-50: #f5f5f7;
+  --text-100: #e3e3e8;
+  --text-200: #c7c7cc;
+  --text-300: #aeaeb2;
+  --text-400: #8e8e93;
+  --text-500: #636366;
+  --text-600: #48484a;
+  --text-700: #3a3a3c;
+  --text-800: #2c2c2e;
+  --text-900: #1c1c1e;
+
+  --brand-500: #34d399;
+  --brand-400: #5eead4;
+  --brand-600: #10b981;
+
+  --state-success: #30d158;
+  --state-error: #ff453a;
+  --state-warning: #ff9f0a;
+  --state-info: #64d2ff;
+
+  --background: var(--background-900);
+  --foreground: var(--text-50);
+  --card: var(--background-800);
+  --card-foreground: var(--text-50);
+  --primary: var(--brand-500);
+  --primary-foreground: var(--background-900);
+  --secondary: var(--background-800);
+  --secondary-foreground: var(--text-50);
+  --muted: var(--background-700);
+  --muted-foreground: var(--background-400);
+  --accent: var(--background-700);
+  --accent-foreground: var(--text-50);
+  --destructive: var(--state-error);
+  --border: var(--background-700);
+  --input: var(--background-700);
+  --ring: var(--brand-500);
+
+  --font-sans: 'DM Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  --radius: 1.2rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.5rem;
+  --radius-full: 9999px;
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.30);
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.36), 0 1px 3px -1px rgba(0, 0, 0, 0.36);
+  --shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.40), 0 1px 2px -1px rgba(0, 0, 0, 0.36);
+  --shadow-md: 0 4px 8px -2px rgba(0, 0, 0, 0.44), 0 2px 4px -2px rgba(0, 0, 0, 0.36);
+  --shadow-lg: 0 8px 24px -8px rgba(0, 0, 0, 0.50), 0 4px 8px -4px rgba(0, 0, 0, 0.40);
+  --shadow-xl: 0 16px 40px -10px rgba(0, 0, 0, 0.55), 0 8px 16px -8px rgba(0, 0, 0, 0.44);
+
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+  --spacing-2xl: 4rem;
+
+  --transition-fast: 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-base: 250ms cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 400ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  --container-max: 1200px;
+}

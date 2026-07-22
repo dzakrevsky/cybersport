@@ -1,0 +1,109 @@
+{
+  "project": {
+    "name": "CyberSport",
+    "operation": "create",
+    "operatingMode": "free-explore",
+    "deviceType": "desktop",
+    "designRead": "esports community hub / gamers 18-35 / bold dark futuristic / showcase / generic card wall",
+    "designDials": {
+      "layoutVariance": 4,
+      "motionIntensity": 3,
+      "visualDensity": 3
+    },
+    "styleDefinitionBrief": "CyberSport esports community hub, dark deep-green background with neon green accents, Inter font, futuristic gaming aesthetic, high energy",
+    "generationTree": {
+      "root": {
+        "nodeId": "gen-project-shell",
+        "kind": "project-shell",
+        "output": "partials/project-shell.html",
+        "status": "planned",
+        "children": [
+          { "nodeId": "gen-page-home", "kind": "page-leaf", "output": "pages/home.html", "status": "planned" },
+          { "nodeId": "gen-page-bonuses", "kind": "page-leaf", "output": "pages/bonuses.html", "status": "planned" },
+          { "nodeId": "gen-page-leaderboard", "kind": "page-leaf", "output": "pages/leaderboard.html", "status": "planned" },
+          { "nodeId": "gen-page-clan-wars", "kind": "page-leaf", "output": "pages/clan-wars.html", "status": "planned" },
+          { "nodeId": "gen-page-partners", "kind": "page-leaf", "output": "pages/partners.html", "status": "planned" }
+        ]
+      }
+    }
+  },
+  "designSource": {
+    "operatingMode": "free-explore",
+    "styleConstraints": {
+      "radiusMax": 16,
+      "staticShadowAlphaMax": 0.05
+    }
+  },
+  "pages": [
+    {
+      "nodeId": "page-home",
+      "title": "Главная",
+      "htmlSrc": "pages/home.html",
+      "pageIndex": 1,
+      "visualNorthStar": "Bold hero with neon glow accent, futuristic gaming community landing",
+      "compositionPattern": "hero-center-cta -> feature-grid -> stats-bar -> full-width-cta",
+      "pageType": "showcase"
+    },
+    {
+      "nodeId": "page-bonuses",
+      "title": "Бонусы",
+      "htmlSrc": "pages/bonuses.html",
+      "pageIndex": 2,
+      "visualNorthStar": "Card grid showcasing VIP perks and active giveaways with green glow borders",
+      "compositionPattern": "section-header -> 2-col-card-grid -> giveaways-list",
+      "pageType": "showcase"
+    },
+    {
+      "nodeId": "page-leaderboard",
+      "title": "Лидерборд",
+      "htmlSrc": "pages/leaderboard.html",
+      "pageIndex": 3,
+      "visualNorthStar": "Data-focused table with top-3 podium highlight and countdown timer",
+      "compositionPattern": "podium-top3 -> countdown -> table -> rules-section",
+      "pageType": "information-dense"
+    },
+    {
+      "nodeId": "page-clan-wars",
+      "title": "Клановые войны",
+      "htmlSrc": "pages/clan-wars.html",
+      "pageIndex": 4,
+      "visualNorthStar": "Immersive clan battle theme with progression system and command reference",
+      "compositionPattern": "clan-selector -> how-to-start -> progression -> commands-table",
+      "pageType": "showcase"
+    },
+    {
+      "nodeId": "page-partners",
+      "title": "Партнёры",
+      "htmlSrc": "pages/partners.html",
+      "pageIndex": 5,
+      "visualNorthStar": "Partner showcase cards with brand logos and bonus details",
+      "compositionPattern": "header-cta -> 4-col-partner-grid -> footer-cta",
+      "pageType": "showcase"
+    }
+  ],
+  "assets": [],
+  "wiringPlan": [
+    { "from": "page-home", "domId": "nav-bonuses", "to": "page-bonuses" },
+    { "from": "page-home", "domId": "nav-leaderboard", "to": "page-leaderboard" },
+    { "from": "page-home", "domId": "nav-clan-wars", "to": "page-clan-wars" },
+    { "from": "page-home", "domId": "nav-partners", "to": "page-partners" },
+    { "from": "page-bonuses", "domId": "nav-home", "to": "page-home" },
+    { "from": "page-bonuses", "domId": "nav-leaderboard", "to": "page-leaderboard" },
+    { "from": "page-leaderboard", "domId": "nav-home", "to": "page-home" },
+    { "from": "page-leaderboard", "domId": "nav-bonuses", "to": "page-bonuses" },
+    { "from": "page-clan-wars", "domId": "nav-home", "to": "page-home" },
+    { "from": "page-clan-wars", "domId": "nav-leaderboard", "to": "page-leaderboard" },
+    { "from": "page-partners", "domId": "nav-home", "to": "page-home" },
+    { "from": "page-partners", "domId": "nav-bonuses", "to": "page-bonuses" }
+  ],
+  "hiddenInteractionPlan": [
+    { "from": "page-bonuses", "domId": "nav-clan-wars", "to": "page-clan-wars", "hide": true },
+    { "from": "page-bonuses", "domId": "nav-partners", "to": "page-partners", "hide": true },
+    { "from": "page-leaderboard", "domId": "nav-clan-wars", "to": "page-clan-wars", "hide": true },
+    { "from": "page-leaderboard", "domId": "nav-partners", "to": "page-partners", "hide": true },
+    { "from": "page-clan-wars", "domId": "nav-bonuses", "to": "page-bonuses", "hide": true },
+    { "from": "page-clan-wars", "domId": "nav-partners", "to": "page-partners", "hide": true },
+    { "from": "page-partners", "domId": "nav-leaderboard", "to": "page-leaderboard", "hide": true },
+    { "from": "page-partners", "domId": "nav-clan-wars", "to": "page-clan-wars", "hide": true }
+  ]
+}

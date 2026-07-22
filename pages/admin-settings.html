@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberSport — Админ — Настройки</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/admin.css">
+    <style>
+      .settings-two-col {
+        display: grid;
+        grid-template-columns: 3fr 2fr;
+        gap: 1.5rem;
+      }
+
+      .admin-card {
+        background: var(--card);
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .admin-card:last-child {
+        margin-bottom: 0;
+      }
+
+      .admin-card-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-50);
+        margin-bottom: 0.25rem;
+      }
+
+      .admin-card-subtitle {
+        font-size: 0.8rem;
+        color: var(--text-500);
+        margin-bottom: 1.25rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.15rem;
+      }
+
+      .form-label {
+        display: block;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-400);
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+      }
+
+      .form-input, .form-select, .form-textarea {
+        width: 100%;
+        background: var(--background-700);
+        border: 1px solid var(--background-600);
+        border-radius: 8px;
+        color: var(--text-50);
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+        font-family: 'DM Sans', sans-serif;
+        outline: none;
+        transition: border-color var(--transition-fast);
+      }
+
+      .form-input:focus, .form-select:focus, .form-textarea:focus {
+        border-color: var(--primary);
+      }
+
+      .form-select {
+        appearance: none;
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238e8e93' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        padding-right: 2.5rem;
+      }
+
+      .form-textarea {
+        resize: vertical;
+        min-height: 80px;
+      }
+
+      .form-input::placeholder, .form-textarea::placeholder {
+        color: var(--text-500);
+      }
+
+      .form-row {
+        display: flex;
+        gap: 0.75rem;
+        align-items: flex-end;
+      }
+
+      .form-row .form-group {
+        flex: 1;
+        margin-bottom: 0;
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: var(--primary-foreground);
+        border: none;
+        border-radius: 8px;
+        padding: 0.7rem 1.5rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        font-family: 'DM Sans', sans-serif;
+        cursor: pointer;
+        transition: opacity var(--transition-fast);
+      }
+
+      .btn-primary:hover {
+        opacity: 0.9;
+      }
+
+      .btn-connect {
+        background: var(--background-700);
+        color: var(--text-200);
+        border: 1px solid var(--background-600);
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        font-size: 0.8rem;
+        font-weight: 500;
+        font-family: 'DM Sans', sans-serif;
+        cursor: pointer;
+        transition: background var(--transition-fast);
+        margin-bottom: 0;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      .btn-connect:hover {
+        background: var(--background-600);
+      }
+
+      .btn-danger {
+        width: 100%;
+        background: transparent;
+        color: var(--state-error);
+        border: 1px solid var(--state-error);
+        border-radius: 8px;
+        padding: 0.7rem 1rem;
+        font-size: 0.85rem;
+        font-weight: 500;
+        font-family: 'DM Sans', sans-serif;
+        cursor: pointer;
+        transition: background var(--transition-fast);
+        margin-bottom: 0.65rem;
+      }
+
+      .btn-danger:last-child {
+        margin-bottom: 0;
+      }
+
+      .btn-danger:hover {
+        background: rgba(255,69,58,0.08);
+      }
+
+      .btn-copy {
+        background: var(--background-700);
+        border: 1px solid var(--background-600);
+        border-radius: 8px;
+        color: var(--text-400);
+        padding: 0.75rem 1rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background var(--transition-fast);
+        flex-shrink: 0;
+      }
+
+      .btn-copy:hover {
+        background: var(--background-600);
+      }
+
+      .btn-copy svg {
+        width: 14px;
+        height: 14px;
+      }
+
+      .api-connection-card {
+        background: var(--background-700);
+        border-radius: 10px;
+        padding: 1rem 1.25rem;
+        margin-bottom: 0.75rem;
+      }
+
+      .api-connection-card:last-of-type {
+        margin-bottom: 0;
+      }
+
+      .api-conn-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.85rem;
+      }
+
+      .api-conn-name {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: var(--text-50);
+        display: flex;
+        align-items: center;
+        gap: 0.6rem;
+      }
+
+      .api-conn-dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+      }
+
+      .api-conn-dot.connected {
+        background: var(--primary);
+      }
+
+      .api-conn-dot.disconnected {
+        background: var(--text-500);
+      }
+
+      .api-conn-status {
+        font-size: 0.7rem;
+        color: var(--text-400);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      .api-conn-status.connected {
+        color: var(--primary);
+      }
+
+      .api-conn-status.disconnected {
+        color: var(--text-500);
+      }
+
+      .toggle-group {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.7rem 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .toggle-group:last-child {
+        border-bottom: none;
+      }
+
+      .toggle-label {
+        font-size: 0.85rem;
+        color: var(--text-200);
+      }
+
+      .toggle-switch {
+        position: relative;
+        width: 42px;
+        height: 24px;
+        cursor: pointer;
+      }
+
+      .toggle-switch input {
+        display: none;
+      }
+
+      .toggle-slider {
+        position: absolute;
+        inset: 0;
+        background: var(--background-600);
+        border-radius: 12px;
+        transition: background var(--transition-fast);
+      }
+
+      .toggle-slider::before {
+        content: '';
+        position: absolute;
+        left: 3px;
+        top: 3px;
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        background: var(--text-50);
+        transition: transform var(--transition-fast);
+      }
+
+      .toggle-switch input:checked + .toggle-slider {
+        background: var(--primary);
+      }
+
+      .toggle-switch input:checked + .toggle-slider::before {
+        transform: translateX(18px);
+      }
+
+      .danger-zone {
+        border-color: rgba(255,69,58,0.3);
+      }
+
+      .danger-zone .admin-card-title {
+        color: var(--state-error);
+      }
+
+      @media (max-width: 1024px) {
+        .settings-two-col {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+      <aside class="admin-sidebar">
+        <div class="sidebar-logo">
+          <span class="sidebar-logo-text">CYBERSPORT</span>
+          <span class="sidebar-logo-label">Admin</span>
+        </div>
+        <nav class="sidebar-nav">
+          <a href="admin-dashboard.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Обзор
+          </a>
+          <a href="admin-giveaways.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+            Розыгрыши
+          </a>
+          <a href="admin-leaderboard.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+            Лидерборд
+          </a>
+          <a href="admin-settings.html" class="active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            Настройки
+          </a>
+        </nav>
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar">A</div>
+          <div>
+            <div class="sidebar-user-name">Admin</div>
+            <div class="sidebar-user-role">Super Admin</div>
+          </div>
+        </div>
+      </aside>
+
+      <div class="admin-main">
+        <div class="admin-topbar">
+          <h1>Настройки</h1>
+          <div class="admin-topbar-right">
+            <input type="text" class="admin-search" placeholder="Поиск...">
+            <div class="admin-topbar-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </div>
+            <div class="admin-topbar-avatar">A</div>
+          </div>
+        </div>
+
+        <div class="settings-two-col">
+          <div>
+            <div class="admin-card">
+              <div class="admin-card-title">General</div>
+              <div class="form-group">
+                <label class="form-label">Site Name</label>
+                <input type="text" class="form-input" value="CyberSport">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Promo Code</label>
+                <div class="form-row">
+                  <div class="form-group">
+                    <input type="text" class="form-input" value="CYBERSPORT" style="margin-bottom:0">
+                  </div>
+                  <button class="btn-copy" id="copyPromoBtn" title="Copy">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  </button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Description</label>
+                <textarea class="form-textarea">CyberSport - the ultimate esports platform for CS2 skin wagering, giveaways, and leaderboard competitions. Join our community and win exclusive prizes.</textarea>
+              </div>
+              <button class="btn-primary" id="saveGeneralBtn">Save</button>
+            </div>
+
+            <div class="admin-card">
+              <div class="admin-card-title">API Configuration</div>
+              <div class="admin-card-subtitle">Configure data sources for leaderboard and statistics</div>
+
+              <div class="api-connection-card">
+                <div class="api-conn-header">
+                  <span class="api-conn-name">
+                    <span class="api-conn-dot connected"></span>
+                    CSGOWin
+                  </span>
+                  <span class="api-conn-status connected">Connected</span>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <input type="password" class="form-input" value="sk_live_abc123xyz" style="margin-bottom:0">
+                  </div>
+                  <button class="btn-connect">Connect</button>
+                </div>
+              </div>
+
+              <div class="api-connection-card">
+                <div class="api-conn-header">
+                  <span class="api-conn-name">
+                    <span class="api-conn-dot disconnected"></span>
+                    SkinRave
+                  </span>
+                  <span class="api-conn-status disconnected">Not connected</span>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <input type="text" class="form-input" placeholder="Enter API key" style="margin-bottom:0">
+                  </div>
+                  <button class="btn-connect">Connect</button>
+                </div>
+              </div>
+
+              <div class="api-connection-card">
+                <div class="api-conn-header">
+                  <span class="api-conn-name">
+                    <span class="api-conn-dot connected"></span>
+                    Discord
+                  </span>
+                  <span class="api-conn-status connected">Connected</span>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <input type="text" class="form-input" value="https://discord.com/api/webhooks/..." style="margin-bottom:0">
+                  </div>
+                  <button class="btn-connect">Connect</button>
+                </div>
+              </div>
+
+              <div class="api-connection-card">
+                <div class="api-conn-header">
+                  <span class="api-conn-name">
+                    <span class="api-conn-dot disconnected"></span>
+                    ClashArena
+                  </span>
+                  <span class="api-conn-status disconnected">Not connected</span>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <input type="text" class="form-input" placeholder="Enter API key" style="margin-bottom:0">
+                  </div>
+                  <button class="btn-connect">Connect</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="admin-card">
+              <div class="admin-card-title">Notifications</div>
+              <div class="toggle-group">
+                <span class="toggle-label">Email notifications</span>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="toggle-group">
+                <span class="toggle-label">Discord alerts</span>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="toggle-group">
+                <span class="toggle-label">New participant alerts</span>
+                <label class="toggle-switch">
+                  <input type="checkbox">
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+              <div class="toggle-group">
+                <span class="toggle-label">Weekly report</span>
+                <label class="toggle-switch">
+                  <input type="checkbox" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="admin-card danger-zone">
+              <div class="admin-card-title">Danger Zone</div>
+              <button class="btn-danger" id="deleteGiveawayDataBtn">Delete all giveaway data</button>
+              <button class="btn-danger" id="resetLeaderboardBtn">Reset leaderboard</button>
+              <button class="btn-danger" id="disconnectAllAPIsBtn">Disconnect all APIs</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const copyPromoBtn = document.getElementById('copyPromoBtn');
+        const saveGeneralBtn = document.getElementById('saveGeneralBtn');
+        const deleteGiveawayDataBtn = document.getElementById('deleteGiveawayDataBtn');
+        const resetLeaderboardBtn = document.getElementById('resetLeaderboardBtn');
+        const disconnectAllAPIsBtn = document.getElementById('disconnectAllAPIsBtn');
+
+        copyPromoBtn.addEventListener('click', async () => {
+          const input = document.querySelector('.form-row input[type="text"]');
+          if (input) {
+            try {
+              await navigator.clipboard.writeText(input.value);
+              const originalContent = copyPromoBtn.innerHTML;
+              copyPromoBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+              copyPromoBtn.style.color = '#34d399';
+              setTimeout(() => {
+                copyPromoBtn.innerHTML = originalContent;
+                copyPromoBtn.style.color = '';
+              }, 2000);
+            } catch (err) {
+              console.error('Failed to copy:', err);
+            }
+          }
+        });
+
+        saveGeneralBtn.addEventListener('click', () => {
+          saveGeneralBtn.textContent = 'Saving...';
+          setTimeout(() => {
+            saveGeneralBtn.textContent = 'Saved!';
+            setTimeout(() => {
+              saveGeneralBtn.textContent = 'Save';
+            }, 2000);
+          }, 800);
+        });
+
+        deleteGiveawayDataBtn.addEventListener('click', () => {
+          if (confirm('Are you sure you want to delete all giveaway data? This cannot be undone.')) {
+            alert('All giveaway data has been deleted');
+          }
+        });
+
+        resetLeaderboardBtn.addEventListener('click', () => {
+          if (confirm('Are you sure you want to reset the leaderboard? All data will be cleared.')) {
+            alert('Leaderboard has been reset');
+          }
+        });
+
+        disconnectAllAPIsBtn.addEventListener('click', () => {
+          if (confirm('Are you sure you want to disconnect all APIs? This will stop all data sync.')) {
+            alert('All APIs have been disconnected');
+          }
+        });
+
+        lucide.createIcons();
+      });
+    </script>
+</body>
+</html>

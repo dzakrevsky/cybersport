@@ -1,0 +1,340 @@
+{
+  "data": [
+    {
+      "id": "page-home",
+      "title": "Главная",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1752476800000,
+      "canvasData": {
+        "x": 620,
+        "y": 0,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/home.html",
+        "interactions": [
+          {
+            "domId": "nav-bonuses",
+            "targetPageId": "page-bonuses"
+          },
+          {
+            "domId": "nav-leaderboard",
+            "targetPageId": "page-leaderboard"
+          },
+          {
+            "domId": "cta-leaderboard",
+            "targetPageId": "page-leaderboard",
+            "hideEdge": true
+          },
+          {
+            "domId": "cta-bonuses",
+            "targetPageId": "page-bonuses",
+            "hideEdge": true
+          },
+          {
+            "domId": "nav-clan-wars",
+            "targetPageId": "page-clan-wars"
+          },
+          {
+            "domId": "nav-partners",
+            "targetPageId": "page-partners"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-bonuses",
+      "title": "Бонусы",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1752476800000,
+      "canvasData": {
+        "x": 0,
+        "y": 0,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/bonuses.html",
+        "interactions": [
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-home"
+          },
+          {
+            "domId": "nav-leaderboard",
+            "targetPageId": "page-leaderboard"
+          },
+          {
+            "domId": "nav-clan-wars",
+            "targetPageId": "page-clan-wars",
+            "hideEdge": true
+          },
+          {
+            "domId": "nav-partners",
+            "targetPageId": "page-partners",
+            "hideEdge": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-leaderboard",
+      "title": "Лидерборд",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1752476800000,
+      "canvasData": {
+        "x": 0,
+        "y": 693,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/leaderboard.html",
+        "interactions": [
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-home"
+          },
+          {
+            "domId": "nav-bonuses",
+            "targetPageId": "page-bonuses",
+            "hideEdge": true
+          },
+          {
+            "domId": "nav-clan-wars",
+            "targetPageId": "page-clan-wars",
+            "hideEdge": true
+          },
+          {
+            "domId": "nav-partners",
+            "targetPageId": "page-partners",
+            "hideEdge": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-clan-wars",
+      "title": "Клановые войны",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1752476800000,
+      "canvasData": {
+        "x": 0,
+        "y": 1533,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/clan-wars.html",
+        "interactions": [
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-home"
+          },
+          {
+            "domId": "nav-leaderboard",
+            "targetPageId": "page-leaderboard",
+            "hideEdge": true
+          },
+          {
+            "domId": "nav-bonuses",
+            "targetPageId": "page-bonuses",
+            "hideEdge": true
+          },
+          {
+            "domId": "nav-partners",
+            "targetPageId": "page-partners",
+            "hideEdge": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-partners",
+      "title": "Партнёры",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1752476800000,
+      "canvasData": {
+        "x": 0,
+        "y": 2572,
+        "group": 0
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/partners.html",
+        "interactions": [
+          {
+            "domId": "nav-home",
+            "targetPageId": "page-home"
+          },
+          {
+            "domId": "nav-bonuses",
+            "targetPageId": "page-bonuses",
+            "hideEdge": true
+          },
+          {
+            "domId": "nav-leaderboard",
+            "targetPageId": "page-leaderboard",
+            "hideEdge": true
+          },
+          {
+            "domId": "nav-clan-wars",
+            "targetPageId": "page-clan-wars",
+            "hideEdge": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-admin-dashboard",
+      "title": "Админка — Обзор",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1752476800000,
+      "canvasData": {
+        "x": 0,
+        "y": 3275,
+        "group": 1
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/admin-dashboard.html",
+        "interactions": [
+          {
+            "domId": "admin-nav-giveaways",
+            "targetPageId": "page-admin-giveaways"
+          },
+          {
+            "domId": "admin-nav-leaderboard",
+            "targetPageId": "page-admin-leaderboard"
+          },
+          {
+            "domId": "admin-nav-settings",
+            "targetPageId": "page-admin-settings"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-admin-giveaways",
+      "title": "Админка — Розыгрыши",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1752476800000,
+      "canvasData": {
+        "x": 620,
+        "y": 3275,
+        "group": 1
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/admin-giveaways.html",
+        "interactions": [
+          {
+            "domId": "admin-nav-dashboard",
+            "targetPageId": "page-admin-dashboard"
+          },
+          {
+            "domId": "admin-nav-leaderboard",
+            "targetPageId": "page-admin-leaderboard"
+          },
+          {
+            "domId": "admin-nav-settings",
+            "targetPageId": "page-admin-settings"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-admin-leaderboard",
+      "title": "Админка — Лидерборд",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1752476800000,
+      "canvasData": {
+        "x": 620,
+        "y": 3652,
+        "group": 1
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/admin-leaderboard.html",
+        "interactions": [
+          {
+            "domId": "admin-nav-dashboard",
+            "targetPageId": "page-admin-dashboard"
+          },
+          {
+            "domId": "admin-nav-giveaways",
+            "targetPageId": "page-admin-giveaways"
+          },
+          {
+            "domId": "admin-nav-settings",
+            "targetPageId": "page-admin-settings"
+          }
+        ]
+      }
+    },
+    {
+      "id": "page-admin-settings",
+      "title": "Админка — Настройки",
+      "type": "page",
+      "version": 1,
+      "createdAt": 1752476800000,
+      "canvasData": {
+        "x": 620,
+        "y": 4029,
+        "group": 1
+      },
+      "devMetadata": {
+        "htmlSrc": "pages/admin-settings.html",
+        "interactions": [
+          {
+            "domId": "admin-nav-dashboard",
+            "targetPageId": "page-admin-dashboard"
+          },
+          {
+            "domId": "admin-nav-giveaways",
+            "targetPageId": "page-admin-giveaways"
+          },
+          {
+            "domId": "admin-nav-leaderboard",
+            "targetPageId": "page-admin-leaderboard"
+          }
+        ]
+      }
+    },
+    {
+      "id": "image-001",
+      "title": "Главная героическое изображение",
+      "type": "image",
+      "version": 1,
+      "createdAt": 1752476800000,
+      "canvasData": {
+        "x": 0,
+        "y": 4492
+      },
+      "devMetadata": {
+        "imageSrc": "assets/hero-main.jpg"
+      }
+    },
+    {
+      "id": "image-002",
+      "title": "Клановые войны фон",
+      "type": "image",
+      "version": 1,
+      "createdAt": 1752476800000,
+      "canvasData": {
+        "x": 620,
+        "y": 4492
+      },
+      "devMetadata": {
+        "imageSrc": "assets/clan-wars-hero.jpg"
+      }
+    }
+  ],
+  "config": {
+    "autoLayout": true,
+    "deviceType": "desktop",
+    "projectName": "CyberSport",
+    "designLibrary": null
+  }
+}

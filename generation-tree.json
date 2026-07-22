@@ -1,0 +1,68 @@
+{
+  "root": {
+    "nodeId": "gen-project-shell",
+    "kind": "project-shell",
+    "output": "partials/project-shell.html",
+    "sharedRegions": ["header", "footer", "root-frame"],
+    "privateRegions": [],
+    "mutableSlots": ["activeNavItem", "pageTitle"],
+    "status": "planned",
+    "children": [
+      {
+        "nodeId": "gen-page-home",
+        "kind": "page-leaf",
+        "pageIds": ["page-home"],
+        "output": "pages/home.html",
+        "sharedRegions": [],
+        "privateRegions": ["hero", "features", "stats", "cta"],
+        "mutableSlots": [],
+        "status": "planned",
+        "children": []
+      },
+      {
+        "nodeId": "gen-page-bonuses",
+        "kind": "page-leaf",
+        "pageIds": ["page-bonuses"],
+        "output": "pages/bonuses.html",
+        "sharedRegions": [],
+        "privateRegions": ["bonus-cards", "giveaways"],
+        "mutableSlots": [],
+        "status": "planned",
+        "children": []
+      },
+      {
+        "nodeId": "gen-page-leaderboard",
+        "kind": "page-leaf",
+        "pageIds": ["page-leaderboard"],
+        "output": "pages/leaderboard.html",
+        "sharedRegions": [],
+        "privateRegions": ["leaderboard-table", "timer"],
+        "mutableSlots": [],
+        "status": "planned",
+        "children": []
+      },
+      {
+        "nodeId": "gen-page-clan-wars",
+        "kind": "page-leaf",
+        "pageIds": ["page-clan-wars"],
+        "output": "pages/clan-wars.html",
+        "sharedRegions": [],
+        "privateRegions": ["clan-info", "progression", "commands"],
+        "mutableSlots": [],
+        "status": "planned",
+        "children": []
+      },
+      {
+        "nodeId": "gen-page-partners",
+        "kind": "page-leaf",
+        "pageIds": ["page-partners"],
+        "output": "pages/partners.html",
+        "sharedRegions": [],
+        "privateRegions": ["partner-cards"],
+        "mutableSlots": [],
+        "status": "planned",
+        "children": []
+      }
+    ]
+  }
+}

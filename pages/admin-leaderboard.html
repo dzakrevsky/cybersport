@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberSport — Админ — Лидерборд</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <link rel="stylesheet" href="../assets/css/admin.css">
+    <style>
+      .admin-table-wrap {
+        background: var(--card);
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        overflow: hidden;
+      }
+
+      .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .admin-table thead th {
+        background: var(--background-700);
+        color: var(--text-400);
+        font-size: 0.7rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        padding: 1rem 1.25rem;
+        text-align: left;
+        border-bottom: 1px solid var(--border);
+      }
+
+      .admin-table tbody td {
+        padding: 0.85rem 1.25rem;
+        font-size: 0.85rem;
+        color: var(--text-200);
+        border-bottom: 1px solid rgba(44,44,46,0.5);
+      }
+
+      .admin-table tbody tr:hover {
+        background: rgba(255,255,255,0.02);
+      }
+
+      .admin-table tbody tr:nth-child(even) {
+        background: rgba(255,255,255,0.01);
+      }
+
+      .admin-table tbody tr:nth-child(even):hover {
+        background: rgba(255,255,255,0.03);
+      }
+
+      .admin-table tbody tr.top3 {
+        background: rgba(52,211,153,0.04);
+      }
+
+      .admin-table tbody tr.top3:hover {
+        background: rgba(52,211,153,0.07);
+      }
+
+      .rank-num {
+        font-weight: 700;
+        color: var(--text-50);
+        width: 30px;
+      }
+
+      .rank-num.gold {
+        color: var(--state-warning);
+      }
+
+      .rank-num.silver {
+        color: var(--text-200);
+      }
+
+      .rank-num.bronze {
+        color: var(--text-200);
+      }
+
+      .player-name {
+        color: var(--text-50);
+        font-weight: 500;
+      }
+
+      .wagered-amount {
+        font-family: var(--font-mono);
+        color: var(--text-50);
+        font-weight: 600;
+      }
+
+      .prize-amount {
+        font-family: var(--font-mono);
+        color: var(--primary);
+        font-weight: 600;
+      }
+
+      .api-status-card {
+        background: var(--card);
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .api-status-left {
+        display: flex;
+        align-items: center;
+        gap: 1.25rem;
+      }
+
+      .api-status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--primary);
+        box-shadow: 0 0 6px rgba(52,211,153,0.4);
+      }
+
+      .api-status-label {
+        font-size: 0.85rem;
+        color: var(--text-200);
+      }
+
+      .api-status-label strong {
+        color: var(--text-50);
+      }
+
+      .api-status-detail {
+        font-size: 0.75rem;
+        color: var(--text-500);
+        margin-top: 0.15rem;
+      }
+
+      .api-status-right {
+        display: flex;
+        gap: 0.75rem;
+      }
+
+      .lb-two-col {
+        display: grid;
+        grid-template-columns: 7fr 3fr;
+        gap: 1.5rem;
+      }
+
+      .admin-card {
+        background: var(--card);
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        padding: 1.5rem;
+      }
+
+      .admin-card-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--text-50);
+        margin-bottom: 1.25rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.15rem;
+      }
+
+      .form-label {
+        display: block;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-400);
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+      }
+
+      .form-input, .form-select {
+        width: 100%;
+        background: var(--background-700);
+        border: 1px solid var(--background-600);
+        border-radius: 8px;
+        color: var(--text-50);
+        padding: 0.75rem 1rem;
+        font-size: 0.875rem;
+        font-family: 'DM Sans', sans-serif;
+        outline: none;
+        transition: border-color var(--transition-fast);
+      }
+
+      .form-input:focus, .form-select:focus {
+        border-color: var(--primary);
+      }
+
+      .form-select {
+        appearance: none;
+        cursor: pointer;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238e8e93' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        padding-right: 2.5rem;
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: var(--primary-foreground);
+        border: none;
+        border-radius: 8px;
+        padding: 0.7rem 1.5rem;
+        font-size: 0.85rem;
+        font-weight: 600;
+        font-family: 'DM Sans', sans-serif;
+        cursor: pointer;
+        transition: opacity var(--transition-fast);
+        width: 100%;
+        margin-top: 1rem;
+      }
+
+      .btn-primary:hover {
+        opacity: 0.9;
+      }
+
+      .btn-outline-green {
+        background: transparent;
+        color: var(--primary);
+        border: 1px solid var(--primary);
+        border-radius: 8px;
+        padding: 0.7rem 1.5rem;
+        font-size: 0.85rem;
+        font-weight: 500;
+        font-family: 'DM Sans', sans-serif;
+        cursor: pointer;
+        transition: background var(--transition-fast);
+      }
+
+      .btn-outline-green:hover {
+        background: rgba(52,211,153,0.1);
+      }
+
+      .btn-outline-gray {
+        background: transparent;
+        color: var(--text-200);
+        border: 1px solid var(--background-600);
+        border-radius: 8px;
+        padding: 0.7rem 1.5rem;
+        font-size: 0.85rem;
+        font-weight: 500;
+        font-family: 'DM Sans', sans-serif;
+        cursor: pointer;
+        transition: background var(--transition-fast);
+      }
+
+      .btn-outline-gray:hover {
+        background: rgba(255,255,255,0.04);
+      }
+
+      .btn-outline-red {
+        background: transparent;
+        color: var(--state-error);
+        border: 1px solid var(--state-error);
+        border-radius: 8px;
+        padding: 0.7rem 1.5rem;
+        font-size: 0.85rem;
+        font-weight: 500;
+        font-family: 'DM Sans', sans-serif;
+        cursor: pointer;
+        transition: background var(--transition-fast);
+      }
+
+      .btn-outline-red:hover {
+        background: rgba(255,69,58,0.1);
+      }
+
+      @media (max-width: 1024px) {
+        .lb-two-col {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .api-status-card {
+          flex-direction: column;
+          gap: 1rem;
+          align-items: flex-start;
+        }
+        .api-status-right {
+          width: 100%;
+          justify-content: flex-start;
+        }
+        .admin-table thead {
+          display: none;
+        }
+        .admin-table tbody tr {
+          display: block;
+          border-bottom: 1px solid var(--border);
+          padding: 1rem;
+        }
+        .admin-table tbody td {
+          display: flex;
+          justify-content: space-between;
+          padding: 0.5rem 0;
+          border-bottom: none;
+        }
+        .admin-table tbody td::before {
+          content: attr(data-label);
+          font-size: 0.7rem;
+          text-transform: uppercase;
+          letter-spacing: 0.1em;
+          color: var(--text-500);
+          font-weight: 500;
+        }
+      }
+    </style>
+</head>
+<body>
+    <div class="admin-layout">
+      <aside class="admin-sidebar">
+        <div class="sidebar-logo">
+          <span class="sidebar-logo-text">CYBERSPORT</span>
+          <span class="sidebar-logo-label">Admin</span>
+        </div>
+        <nav class="sidebar-nav">
+          <a href="admin-dashboard.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+            Обзор
+          </a>
+          <a href="admin-giveaways.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 12 20 22 4 22 4 12"/><rect x="2" y="7" width="20" height="5"/><line x1="12" y1="22" x2="12" y2="7"/><path d="M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z"/><path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C13 2 12 7 12 7z"/></svg>
+            Розыгрыши
+          </a>
+          <a href="admin-leaderboard.html" class="active">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>
+            Лидерборд
+          </a>
+          <a href="admin-settings.html">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            Настройки
+          </a>
+        </nav>
+        <div class="sidebar-user">
+          <div class="sidebar-user-avatar">A</div>
+          <div>
+            <div class="sidebar-user-name">Admin</div>
+            <div class="sidebar-user-role">Super Admin</div>
+          </div>
+        </div>
+      </aside>
+
+      <div class="admin-main">
+        <div class="admin-topbar">
+          <h1>Лидерборд</h1>
+          <div class="admin-topbar-right">
+            <input type="text" class="admin-search" placeholder="Поиск...">
+            <div class="admin-topbar-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            </div>
+            <div class="admin-topbar-avatar">A</div>
+            <button class="btn-outline-gray">Import Data</button>
+            <button class="btn-outline-red" id="resetLeaderboardBtn">Reset</button>
+          </div>
+        </div>
+
+        <div class="api-status-card">
+          <div class="api-status-left">
+            <div class="api-status-dot"></div>
+            <div>
+              <div class="api-status-label"><strong>API Status: Connected</strong></div>
+              <div class="api-status-detail">Platform: CSGOWin &mdash; API Key: cs_**********1234 &mdash; Last sync: 2 min ago</div>
+            </div>
+          </div>
+          <div class="api-status-right">
+            <button class="btn-outline-gray">Test Connection</button>
+            <button class="btn-outline-green" id="forceSyncBtn">Force Sync</button>
+          </div>
+        </div>
+
+        <div class="lb-two-col">
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Player</th>
+                  <th>Wagered (coins)</th>
+                  <th>Prize</th>
+                  <th>Source</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="top3">
+                  <td data-label="Rank"><span class="rank-num gold">#1</span></td>
+                  <td data-label="Player" class="player-name">ProGamer_X</td>
+                  <td data-label="Wagered" class="wagered-amount">245,830</td>
+                  <td data-label="Prize" class="prize-amount">500 coins</td>
+                  <td data-label="Source">CSGOWin</td>
+                </tr>
+                <tr class="top3">
+                  <td data-label="Rank"><span class="rank-num silver">#2</span></td>
+                  <td data-label="Player" class="player-name">CryptoKing</td>
+                  <td data-label="Wagered" class="wagered-amount">198,450</td>
+                  <td data-label="Prize" class="prize-amount">300 coins</td>
+                  <td data-label="Source">CSGOWin</td>
+                </tr>
+                <tr class="top3">
+                  <td data-label="Rank"><span class="rank-num bronze">#3</span></td>
+                  <td data-label="Player" class="player-name">NightOwl</td>
+                  <td data-label="Wagered" class="wagered-amount">167,210</td>
+                  <td data-label="Prize" class="prize-amount">200 coins</td>
+                  <td data-label="Source">SkinRave</td>
+                </tr>
+                <tr>
+                  <td data-label="Rank"><span class="rank-num">#4</span></td>
+                  <td data-label="Player" class="player-name">ShadowBlade</td>
+                  <td data-label="Wagered" class="wagered-amount">143,870</td>
+                  <td data-label="Prize">--</td>
+                  <td data-label="Source">CSGOWin</td>
+                </tr>
+                <tr>
+                  <td data-label="Rank"><span class="rank-num">#5</span></td>
+                  <td data-label="Player" class="player-name">AceStrike</td>
+                  <td data-label="Wagered" class="wagered-amount">132,500</td>
+                  <td data-label="Prize">--</td>
+                  <td data-label="Source">SkinRave</td>
+                </tr>
+                <tr>
+                  <td data-label="Rank"><span class="rank-num">#6</span></td>
+                  <td data-label="Player" class="player-name">SkinMaster99</td>
+                  <td data-label="Wagered" class="wagered-amount">118,340</td>
+                  <td data-label="Prize">--</td>
+                  <td data-label="Source">CSGOWin</td>
+                </tr>
+                <tr>
+                  <td data-label="Rank"><span class="rank-num">#7</span></td>
+                  <td data-label="Player" class="player-name">DragonSlayer</td>
+                  <td data-label="Wagered" class="wagered-amount">97,120</td>
+                  <td data-label="Prize">--</td>
+                  <td data-label="Source">ClashArena</td>
+                </tr>
+                <tr>
+                  <td data-label="Rank"><span class="rank-num">#8</span></td>
+                  <td data-label="Player" class="player-name">ViperKing</td>
+                  <td data-label="Wagered" class="wagered-amount">85,670</td>
+                  <td data-label="Prize">--</td>
+                  <td data-label="Source">CSGOWin</td>
+                </tr>
+                <tr>
+                  <td data-label="Rank"><span class="rank-num">#9</span></td>
+                  <td data-label="Player" class="player-name">BlazeRunner</td>
+                  <td data-label="Wagered" class="wagered-amount">74,230</td>
+                  <td data-label="Prize">--</td>
+                  <td data-label="Source">SkinRave</td>
+                </tr>
+                <tr>
+                  <td data-label="Rank"><span class="rank-num">#10</span></td>
+                  <td data-label="Player" class="player-name">IcePhoenix</td>
+                  <td data-label="Wagered" class="wagered-amount">62,890</td>
+                  <td data-label="Prize">--</td>
+                  <td data-label="Source">CSGOWin</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="admin-card">
+            <div class="admin-card-title">Leaderboard Settings</div>
+            <div class="form-group">
+              <label class="form-label">Monthly prize pool</label>
+              <input type="text" class="form-input" value="1,000 coins">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Update frequency</label>
+              <select class="form-select">
+                <option>5 min</option>
+                <option selected>15 min</option>
+                <option>30 min</option>
+                <option>60 min</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Minimum wager</label>
+              <input type="text" class="form-input" value="100 coins">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Reset schedule</label>
+              <select class="form-select">
+                <option>Weekly</option>
+                <option selected>Monthly</option>
+                <option>Quarterly</option>
+              </select>
+            </div>
+            <button class="btn-primary" id="saveSettingsBtn">Save Settings</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
+    <script src="../assets/js/main.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const forceSyncBtn = document.getElementById('forceSyncBtn');
+        const resetBtn = document.getElementById('resetLeaderboardBtn');
+        const saveSettingsBtn = document.getElementById('saveSettingsBtn');
+        const apiStatusDot = document.querySelector('.api-status-dot');
+
+        forceSyncBtn.addEventListener('click', () => {
+          apiStatusDot.style.boxShadow = '0 0 12px rgba(52,211,153,0.8)';
+          forceSyncBtn.textContent = 'Syncing...';
+          forceSyncBtn.disabled = true;
+          
+          setTimeout(() => {
+            apiStatusDot.style.boxShadow = '0 0 6px rgba(52,211,153,0.4)';
+            forceSyncBtn.textContent = 'Force Sync';
+            forceSyncBtn.disabled = false;
+          }, 2000);
+        });
+
+        resetBtn.addEventListener('click', () => {
+          if (confirm('Are you sure you want to reset the leaderboard? All data will be cleared.')) {
+            alert('Leaderboard has been reset successfully');
+          }
+        });
+
+        saveSettingsBtn.addEventListener('click', () => {
+          saveSettingsBtn.textContent = 'Saving...';
+          setTimeout(() => {
+            saveSettingsBtn.textContent = 'Settings Saved!';
+            setTimeout(() => {
+              saveSettingsBtn.textContent = 'Save Settings';
+            }, 2000);
+          }, 800);
+        });
+
+        lucide.createIcons();
+      });
+    </script>
+</body>
+</html>

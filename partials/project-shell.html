@@ -1,0 +1,187 @@
+<!-- ═══════════════════════════════════════════════════════════
+     CyberSport — Shared Project Shell (Header + Footer)
+     Partial fragment: inject into full-page layouts.
+     ═══════════════════════════════════════════════════════════ -->
+
+
+<!-- ─── HEADER / NAVIGATION ─────────────────────────────── -->
+<header
+  class="sticky top-0 z-50 w-full"
+  style="background-color: var(--color-primary); border-bottom: 1px solid var(--color-border); box-shadow: 0 1px 12px var(--color-glow);"
+>
+  <nav class="mx-auto flex max-w-7xl items-center justify-between px-6 py-3" style="font-family: var(--font-display);">
+
+    <!-- Logo -->
+    <a href="/" class="flex items-center gap-0 select-none" style="text-decoration: none;">
+      <span
+        class="text-xl font-extrabold tracking-wider"
+        style="color: var(--color-accent); text-shadow: 0 0 10px var(--color-glow-strong), 0 0 30px var(--color-glow);"
+      >CYBER</span>
+      <span
+        class="text-xl font-bold tracking-wider"
+        style="color: var(--color-text-primary);"
+      >SPORT</span>
+    </a>
+
+    <!-- Center navigation -->
+    <ul class="hidden md:flex items-center gap-8 list-none m-0 p-0">
+
+      <!-- SLOT: activeNavItem — replace inline styles per page -->
+      <!-- Example: add  style="color: var(--color-accent); border-bottom: 2px solid var(--color-accent);"  on the active <li> -->
+
+      <li data-nav-key="home">
+        <a
+          href="/"
+          class="text-sm font-medium tracking-wide transition-colors duration-200 pb-1 border-b-2 border-transparent hover:border-[var(--color-accent)]"
+          style="color: var(--color-text-secondary); text-decoration: none;"
+        >Главная</a>
+      </li>
+
+      <li data-nav-key="bonuses">
+        <a
+          href="/bonuses"
+          class="text-sm font-medium tracking-wide transition-colors duration-200 pb-1 border-b-2 border-transparent hover:border-[var(--color-accent)]"
+          style="color: var(--color-text-secondary); text-decoration: none;"
+        >Бонусы</a>
+      </li>
+
+      <li data-nav-key="leaderboard">
+        <a
+          href="/leaderboard"
+          class="text-sm font-medium tracking-wide transition-colors duration-200 pb-1 border-b-2 border-transparent hover:border-[var(--color-accent)]"
+          style="color: var(--color-text-secondary); text-decoration: none;"
+        >Лидерборд</a>
+      </li>
+
+      <li data-nav-key="clan-wars">
+        <a
+          href="/clan-wars"
+          class="text-sm font-medium tracking-wide transition-colors duration-200 pb-1 border-b-2 border-transparent hover:border-[var(--color-accent)]"
+          style="color: var(--color-text-secondary); text-decoration: none;"
+        >Клановые войны</a>
+      </li>
+
+      <li data-nav-key="partners">
+        <a
+          href="/partners"
+          class="text-sm font-medium tracking-wide transition-colors duration-200 pb-1 border-b-2 border-transparent hover:border-[var(--color-accent)]"
+          style="color: var(--color-text-secondary); text-decoration: none;"
+        >Партнёры</a>
+      </li>
+
+    </ul>
+
+    <!-- Right: Join button -->
+    <a
+      href="/join"
+      class="ml-4 inline-flex items-center rounded-lg px-5 py-2 text-sm font-semibold tracking-wide transition-all duration-200 hover:brightness-110"
+      style="
+        background-color: var(--color-accent);
+        color: var(--color-text-on-accent);
+        box-shadow: 0 0 12px var(--color-glow);
+        text-decoration: none;
+      "
+    >Присоединиться</a>
+
+  </nav>
+</header>
+
+
+<!-- ─── MAIN CONTENT SLOT ───────────────────────────────── -->
+<!-- Pages inject their page-specific content here. -->
+
+
+<!-- ─── FOOTER ───────────────────────────────────────────── -->
+<footer
+  class="mt-auto w-full"
+  style="background-color: var(--color-primary-dark); border-top: 1px solid var(--color-border); box-shadow: 0 -1px 16px var(--color-glow);"
+>
+  <div class="mx-auto max-w-7xl px-6 py-12" style="font-family: var(--font-display);">
+
+    <!-- 3-column grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
+
+      <!-- Column 1 — Brand -->
+      <div>
+        <a href="/" class="flex items-center gap-0 select-none mb-4" style="text-decoration: none;">
+          <span class="text-xl font-extrabold tracking-wider" style="color: var(--color-accent);">CYBER</span>
+          <span class="text-xl font-bold tracking-wider" style="color: var(--color-text-primary);">SPORT</span>
+        </a>
+        <p class="text-sm leading-relaxed" style="color: var(--color-text-muted);">
+          Единство. Сила. Победа.
+        </p>
+      </div>
+
+      <!-- Column 2 — Quick links -->
+      <div>
+        <h3 class="text-sm font-semibold tracking-wider uppercase mb-4" style="color: var(--color-text-secondary);">Навигация</h3>
+        <ul class="flex flex-col gap-2 list-none m-0 p-0">
+          <li><a href="/" class="text-sm transition-colors duration-200 hover:text-[var(--color-accent)]" style="color: var(--color-text-muted); text-decoration: none;">Главная</a></li>
+          <li><a href="/bonuses" class="text-sm transition-colors duration-200 hover:text-[var(--color-accent)]" style="color: var(--color-text-muted); text-decoration: none;">Бонусы</a></li>
+          <li><a href="/leaderboard" class="text-sm transition-colors duration-200 hover:text-[var(--color-accent)]" style="color: var(--color-text-muted); text-decoration: none;">Лидерборд</a></li>
+          <li><a href="/partners" class="text-sm transition-colors duration-200 hover:text-[var(--color-accent)]" style="color: var(--color-text-muted); text-decoration: none;">Партнёры</a></li>
+        </ul>
+      </div>
+
+      <!-- Column 3 — Social -->
+      <div>
+        <h3 class="text-sm font-semibold tracking-wider uppercase mb-4" style="color: var(--color-text-secondary);">Сообщество</h3>
+        <div class="flex items-center gap-4">
+
+          <!-- Discord -->
+          <a
+            href="https://discord.gg"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center rounded-lg w-10 h-10 transition-all duration-200 hover:brightness-125"
+            style="background-color: var(--color-surface); border: 1px solid var(--color-border);"
+            aria-label="Discord"
+          >
+            <svg class="w-5 h-5" style="color: var(--color-text-secondary);" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+            </svg>
+          </a>
+
+          <!-- Twitter / X -->
+          <a
+            href="https://x.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center rounded-lg w-10 h-10 transition-all duration-200 hover:brightness-125"
+            style="background-color: var(--color-surface); border: 1px solid var(--color-border);"
+            aria-label="Twitter"
+          >
+            <svg class="w-5 h-5" style="color: var(--color-text-secondary);" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+            </svg>
+          </a>
+
+          <!-- Kick -->
+          <a
+            href="https://kick.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center rounded-lg w-10 h-10 transition-all duration-200 hover:brightness-125"
+            style="background-color: var(--color-surface); border: 1px solid var(--color-border);"
+            aria-label="Kick"
+          >
+            <svg class="w-5 h-5" style="color: var(--color-text-secondary);" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M1.101 2.282v19.436h4.226V24l4.226-2.282 4.226 2.282v-2.282h4.226V2.282L13.627 0 9.401 2.282 5.175 0 1.101 2.282zm8.377 11.332a.94.94 0 0 1-.748-.357.945.945 0 0 1-.15-.812l.758-2.72a.945.945 0 0 1 .898-.672h4.834a.945.945 0 0 1 .898.673l.758 2.719a.945.945 0 0 1-.15.813.94.94 0 0 1-.748.356h-5.95zm-2.828 4.227V15.5h4.226v2.34l-2.113 1.142-2.113-1.142zm8.452 0V15.5h-2.113v3.483l2.113-1.142z"/>
+            </svg>
+          </a>
+
+        </div>
+      </div>
+
+    </div><!-- /grid -->
+
+    <!-- Bottom bar -->
+    <div
+      class="mt-10 pt-6 text-center text-xs tracking-wide"
+      style="border-top: 1px solid var(--color-border); color: var(--color-text-muted);"
+    >
+      &copy; 2026 CyberSport. Все права защищены.
+    </div>
+
+  </div>
+</footer>
