@@ -364,14 +364,37 @@ class CyberSportApp {
         return;
       }
 
-      container.innerHTML = leaderboard.map(player => {
+      const isTable = container.tagName === 'TBODY';
+
+      const rows = leaderboard.map(player => {
+        const changeIcon = player.change === 'up' ? 'trending-up' : player.change === 'down' ? 'trending-down' : 'minus';
+        const changeColor = player.change === 'up' ? '#34d399' : player.change === 'down' ? '#f87171' : 'var(--text-500)';
+
+        if (isTable) {
+          return `
+            <tr>
+              <td class="mono" style="font-weight: 600;">${player.rank}</td>
+              <td>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--background-700); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 600; color: var(--text-200);">${player.avatar}</div>
+                  <div>
+                    <div style="font-weight: 500; color: var(--text-50);">${player.username}</div>
+                    <div style="font-size: 0.75rem; color: var(--text-500); text-transform: uppercase; letter-spacing: 0.05em;">${player.clan}</div>
+                  </div>
+                </div>
+              </td>
+              <td class="mono">${player.score.toLocaleString('ru-RU')}</td>
+              <td style="color: ${changeColor};">
+                <i data-lucide="${changeIcon}" style="width: 16px; height: 16px;"></i>
+              </td>
+            </tr>
+          `;
+        }
+
         let rankClass = '';
         if (player.rank === 1) rankClass = 'rank-gold';
         else if (player.rank === 2) rankClass = 'rank-silver';
         else if (player.rank === 3) rankClass = 'rank-bronze';
-
-        const changeIcon = player.change === 'up' ? 'trending-up' : player.change === 'down' ? 'trending-down' : 'minus';
-        const changeColor = player.change === 'up' ? '#34d399' : player.change === 'down' ? '#f87171' : 'var(--text-500)';
 
         return `
           <div class="leaderboard-row">
@@ -390,6 +413,8 @@ class CyberSportApp {
           </div>
         `;
       }).join('');
+
+      container.innerHTML = rows;
     });
 
     this.initLucideIcons();
