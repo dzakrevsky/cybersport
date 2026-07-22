@@ -37,6 +37,12 @@
   status = 302
 
 [[redirects]]
+  from = "/api/leaderboard"
+  to = "https://api.unbox.gg/affiliates/public/applicants"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/admin/login"
   to = "/pages/admin-login.html"
   status = 200

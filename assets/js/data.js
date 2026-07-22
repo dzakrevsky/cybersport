@@ -1,5 +1,6 @@
 const API_CONFIG = {
-  baseUrl: 'https://api.unbox.gg/affiliates/public',
+  baseUrl: '/api/leaderboard',
+  externalBaseUrl: 'https://api.unbox.gg/affiliates/public/applicants',
   token: 'cae12055-d7e8-4fac-8f90-68ddae6f1645',
   leaderboardTake: 10
 };
@@ -176,10 +177,13 @@ class DataStore {
         to: nowDate.toISOString()
       });
 
-      const res = await fetch(`${API_CONFIG.baseUrl}/applicants?${params.toString()}`);
-
-      if (!res.ok) {
-        throw new Error(`API error: ${res.status}`);
+      const query = params.toString();
+      let res;
+      try {
+        res = await fetch(`${API_CONFIG.baseUrl}?${query}`);
+        if (!res.ok) throw new Error(`Proxy API error: ${res.status}`);
+      } catch (proxyErr) {
+        res = await fetch(`${API_CONFIG.externalBaseUrl}?${query}`);
       }
 
       const data = await res.json();
