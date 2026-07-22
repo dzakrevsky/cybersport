@@ -165,6 +165,11 @@
       </div>
     </div>
 
+    <script>
+      if (!sessionStorage.getItem('cybersport_admin')) {
+        window.location.href = 'admin-login.html';
+      }
+    </script>
     <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
     <script src="../assets/js/main.js"></script>
 </body>

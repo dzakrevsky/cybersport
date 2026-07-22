@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberSport — Вход в админку</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;0,9..40,800;1,9..40,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../assets/css/variables.css">
+    <link rel="stylesheet" href="../assets/css/base.css">
+    <style>
+      body {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background:
+          radial-gradient(ellipse 80% 60% at 50% 0%, rgba(52, 211, 153, 0.06) 0%, transparent 60%),
+          linear-gradient(180deg, #000 0%, #0a0a0a 100%);
+        padding: 2rem 1.5rem;
+      }
+
+      .login-card {
+        width: 100%;
+        max-width: 420px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: var(--radius);
+        padding: 3rem;
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+      }
+
+      .login-logo {
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .login-logo a {
+        font-size: 1.5rem;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+        color: #fff;
+        text-decoration: none;
+      }
+
+      .login-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-50);
+        margin-bottom: 0.5rem;
+        text-align: center;
+      }
+
+      .login-subtitle {
+        font-size: 0.875rem;
+        color: var(--text-400);
+        text-align: center;
+        margin-bottom: 2rem;
+      }
+
+      .form-group {
+        margin-bottom: 1.25rem;
+      }
+
+      .form-label {
+        display: block;
+        font-size: 0.8125rem;
+        font-weight: 500;
+        color: var(--text-200);
+        margin-bottom: 0.5rem;
+      }
+
+      .form-input {
+        width: 100%;
+        padding: 0.75rem 1rem;
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: var(--radius-md);
+        color: var(--text-50);
+        font-size: 0.9375rem;
+        font-family: inherit;
+        transition: border-color var(--transition-fast), background var(--transition-fast);
+      }
+
+      .form-input:focus {
+        outline: none;
+        border-color: var(--primary);
+        background: rgba(255, 255, 255, 0.05);
+      }
+
+      .form-input::placeholder {
+        color: var(--text-500);
+      }
+
+      .login-btn {
+        width: 100%;
+        padding: 0.875rem 1.5rem;
+        background: var(--primary);
+        color: var(--primary-foreground);
+        border: none;
+        border-radius: var(--radius-md);
+        font-size: 0.9375rem;
+        font-weight: 600;
+        font-family: inherit;
+        cursor: pointer;
+        margin-top: 0.5rem;
+        transition: background var(--transition-fast), transform var(--transition-fast);
+      }
+
+      .login-btn:hover {
+        background: var(--brand-600);
+        transform: translateY(-1px);
+      }
+
+      .login-footer {
+        margin-top: 1.5rem;
+        text-align: center;
+      }
+
+      .login-footer a {
+        font-size: 0.8125rem;
+        color: var(--text-400);
+        text-decoration: none;
+      }
+
+      .login-footer a:hover {
+        color: var(--text-200);
+      }
+
+      .login-error {
+        display: none;
+        padding: 0.75rem 1rem;
+        background: rgba(239, 68, 68, 0.1);
+        border: 1px solid rgba(239, 68, 68, 0.2);
+        border-radius: var(--radius-md);
+        color: #fca5a5;
+        font-size: 0.8125rem;
+        margin-bottom: 1.25rem;
+      }
+
+      .login-error.visible {
+        display: block;
+      }
+
+      @media (max-width: 480px) {
+        .login-card {
+          padding: 2rem 1.5rem;
+        }
+      }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="login-logo">
+            <a href="home.html">CYBERSPORT</a>
+        </div>
+        <h1 class="login-title">Вход в админку</h1>
+        <p class="login-subtitle">Введите данные для доступа к панели управления</p>
+
+        <div class="login-error" id="loginError">Неверный логин или пароль</div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label class="form-label" for="username">Логин</label>
+                <input type="text" id="username" class="form-input" placeholder="admin" autocomplete="username">
+            </div>
+            <div class="form-group">
+                <label class="form-label" for="password">Пароль</label>
+                <input type="password" id="password" class="form-input" placeholder="••••••••" autocomplete="current-password">
+            </div>
+            <button type="submit" class="login-btn">Войти</button>
+        </form>
+
+        <div class="login-footer">
+            <a href="home.html">← Вернуться на сайт</a>
+        </div>
+    </div>
+
+    <script>
+      const ADMIN_CREDENTIALS = { username: 'admin', password: 'admin123' };
+
+      document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+        const errorEl = document.getElementById('loginError');
+
+        if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
+          sessionStorage.setItem('cybersport_admin', 'true');
+          window.location.href = 'admin-dashboard.html';
+        } else {
+          errorEl.classList.add('visible');
+          setTimeout(() => errorEl.classList.remove('visible'), 3000);
+        }
+      });
+    </script>
+</body>
+</html>

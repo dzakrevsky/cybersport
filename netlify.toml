@@ -34,6 +34,11 @@
 [[redirects]]
   from = "/admin"
   to = "/pages/admin-dashboard.html"
+  status = 302
+
+[[redirects]]
+  from = "/admin/login"
+  to = "/pages/admin-login.html"
   status = 200
 
 [[headers]]

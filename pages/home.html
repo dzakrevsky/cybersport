@@ -218,6 +218,164 @@
         font-family: var(--font-mono);
       }
 
+      .how-steps {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 1.5rem;
+        counter-reset: step;
+      }
+
+      .step-card {
+        position: relative;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: var(--radius);
+        padding: 2rem 1.5rem 1.75rem;
+      }
+
+      .step-number {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--primary);
+        margin-bottom: 1rem;
+        letter-spacing: 0.1em;
+      }
+
+      .step-card h3 {
+        font-size: 1.0625rem;
+        font-weight: 600;
+        color: var(--text-50);
+        margin-bottom: 0.5rem;
+      }
+
+      .step-card p {
+        font-size: 0.875rem;
+        color: var(--text-400);
+        line-height: 1.6;
+      }
+
+      .testimonials-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.25rem;
+      }
+
+      .testimonial-card {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: var(--radius);
+        padding: 2rem;
+      }
+
+      .testimonial-stars {
+        display: flex;
+        gap: 0.25rem;
+        margin-bottom: 1rem;
+        color: #fbbf24;
+      }
+
+      .testimonial-text {
+        font-size: 0.9375rem;
+        color: var(--text-200);
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+      }
+
+      .testimonial-author {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+      }
+
+      .testimonial-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: var(--background-700);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 600;
+        font-size: 0.875rem;
+        color: var(--text-200);
+      }
+
+      .testimonial-name {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: var(--text-50);
+      }
+
+      .testimonial-role {
+        font-size: 0.75rem;
+        color: var(--text-500);
+        margin-top: 2px;
+      }
+
+      .faq-list {
+        max-width: 800px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+      }
+
+      .faq-item {
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+
+      .faq-question {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.25rem 1.5rem;
+        background: none;
+        border: none;
+        color: var(--text-50);
+        font-size: 0.9375rem;
+        font-weight: 500;
+        font-family: inherit;
+        cursor: pointer;
+        text-align: left;
+        transition: color var(--transition-fast);
+      }
+
+      .faq-question:hover {
+        color: var(--text-200);
+      }
+
+      .faq-icon {
+        color: var(--text-500);
+        transition: transform var(--transition-fast);
+        flex-shrink: 0;
+      }
+
+      .faq-item.open .faq-icon {
+        transform: rotate(180deg);
+      }
+
+      .faq-answer {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.3s ease;
+      }
+
+      .faq-item.open .faq-answer {
+        max-height: 300px;
+      }
+
+      .faq-answer-inner {
+        padding: 0 1.5rem 1.25rem;
+        font-size: 0.875rem;
+        color: var(--text-400);
+        line-height: 1.6;
+      }
+
       .cta-banner {
         max-width: var(--container-max);
         margin: 0 auto;
@@ -257,6 +415,8 @@
       @media (max-width: 1024px) {
         .features-grid { grid-template-columns: repeat(2, 1fr); }
         .giveaways-grid { grid-template-columns: 1fr; }
+        .how-steps { grid-template-columns: repeat(2, 1fr); }
+        .testimonials-grid { grid-template-columns: 1fr; }
       }
 
       @media (max-width: 768px) {
@@ -265,6 +425,7 @@
         .section { padding: 4rem 1.5rem; }
         .cta-inner { padding: 3rem 1.5rem; }
         .cta-banner { padding: 0 1.5rem 4rem; }
+        .how-steps { grid-template-columns: 1fr; }
       }
 
       @media (max-width: 480px) {
@@ -406,6 +567,159 @@
             </div>
         </section>
 
+        <section class="section" style="padding-top: 0;">
+            <div class="reveal">
+                <div class="section-label">Как это работает</div>
+                <h2 class="section-heading">Начните за 4 простых шага</h2>
+            </div>
+            <div class="how-steps reveal-stagger">
+                <div class="step-card">
+                    <div class="step-number">ШАГ 01</div>
+                    <h3>Регистрация</h3>
+                    <p>Создайте аккаунт на нашей платформе за несколько секунд. Это бесплатно и займёт меньше минуты.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">ШАГ 02</div>
+                    <h3>Присоединяйтесь к клану</h3>
+                    <p>Выберите один из трёх кланов и начните зарабатывать XP для себя и своей команды.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">ШАГ 03</div>
+                    <h3>Играйте и получайте бонусы</h3>
+                    <p>Участвуйте в розыгрышах, выполняйте задания и получайте эксклюзивные бонусы от партнёров.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">ШАГ 04</div>
+                    <h3>Поднимайтесь в лидерборде</h3>
+                    <p>Соревнуйтесь с другими игроками и занимайте призовые места с денежными призами.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" style="padding-top: 0;">
+            <div class="reveal">
+                <div class="section-label">Отзывы</div>
+                <h2 class="section-heading">Что говорят игроки</h2>
+            </div>
+            <div class="testimonials-grid reveal-stagger">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">
+                        <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+                        <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+                        <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+                        <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+                        <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+                    </div>
+                    <p class="testimonial-text">«Лучшее киберспортивное сообщество, в котором я был. Кластные бонусы, активные игроки и реальные призы в лидерборде.»</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">AK</div>
+                        <div>
+                            <div class="testimonial-name">Alex_Killer</div>
+                            <div class="testimonial-role">Топ-10 лидерборда</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">
+                        <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+                        <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+                        <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+                        <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+                        <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+                    </div>
+                    <p class="testimonial-text">«Клановые войны — это огонь. Наша команда выигрывает уже 3 недели подряд. Атмосфера в Discord просто сумасшедшая.»</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">NS</div>
+                        <div>
+                            <div class="testimonial-name">NightShade</div>
+                            <div class="testimonial-role">Капитан клана Phantom</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">
+                        <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+                        <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+                        <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+                        <i data-lucide="star" style="width: 16px; height: 16px; fill: currentColor;"></i>
+                        <i data-lucide="star-half" style="width: 16px; height: 16px; fill: currentColor;"></i>
+                    </div>
+                    <p class="testimonial-text">«Заработал уже больше $500 на бонусах и розыгрышах. Всё честно, выводят быстро. Рекомендую всем друзьям.»</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">CK</div>
+                        <div>
+                            <div class="testimonial-name">CryptoKing</div>
+                            <div class="testimonial-role">Участник с 2025</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" style="padding-top: 0;">
+            <div class="reveal">
+                <div class="section-label section-heading--center">FAQ</div>
+                <h2 class="section-heading section-heading--center">Часто задаваемые вопросы</h2>
+            </div>
+            <div class="faq-list reveal-stagger">
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Как начать участвовать в розыгрышах?</span>
+                        <i data-lucide="chevron-down" class="faq-icon" style="width: 18px; height: 18px;"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            Просто зарегистрируйтесь на платформе и присоединитесь к любому активному розыгрышу на странице «Бонусы». Участие бесплатно для всех игроков.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Как работает клановая система?</span>
+                        <i data-lucide="chevron-down" class="faq-icon" style="width: 18px; height: 18px;"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            Вы можете выбрать один из трёх кланов. Каждую неделю кланы соревнуются между собой — чем больше XP зарабатывает клан, тем выше его позиция и больше призов для участников.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Можно ли сменить клан?</span>
+                        <i data-lucide="chevron-down" class="faq-icon" style="width: 18px; height: 18px;"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            Да, сменить клан можно раз в 30 дней. Имейте в виду, что при смене клана ваш личный XP сохраняется, но вклад в старый клан обнуляется.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Как выводить выигранные призы?</span>
+                        <i data-lucide="chevron-down" class="faq-icon" style="width: 18px; height: 18px;"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            Призы зачисляются на ваш внутренний баланс, откуда их можно вывести на крипто-кошелёк или использовать в партнёрских проектах. Минимальная сумма вывода — $10.
+                        </div>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Это бесплатно?</span>
+                        <i data-lucide="chevron-down" class="faq-icon" style="width: 18px; height: 18px;"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <div class="faq-answer-inner">
+                            Да, регистрация и участие в сообществе абсолютно бесплатны. Мы зарабатываем на партнёрских комиссиях, когда вы используете бонусы наших партнёров.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <div class="cta-banner reveal">
             <div class="cta-inner">
                 <h2>Готовы начать?</h2>
@@ -441,6 +755,12 @@
                         <li><a href="#">Правила</a></li>
                         <li><a href="#">FAQ</a></li>
                         <li><a href="#">Поддержка</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Админка</h4>
+                    <ul>
+                        <li><a href="admin-login.html">Вход в панель</a></li>
                     </ul>
                 </div>
                 <div class="footer-col">
