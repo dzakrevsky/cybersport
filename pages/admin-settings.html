@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru" class="dark">
 <head>
     <meta charset="UTF-8">
@@ -504,7 +504,8 @@
       }
     </script>
     <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
-    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/data.js?v=5"></script>
+    <script src="../assets/js/main.js?v=5"></script>
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         const copyPromoBtn = document.getElementById('copyPromoBtn');
@@ -543,13 +544,21 @@
 
         deleteGiveawayDataBtn.addEventListener('click', () => {
           if (confirm('Are you sure you want to delete all giveaway data? This cannot be undone.')) {
+            if (window.DataStore) {
+              window.DataStore.data.giveaways = [];
+              window.DataStore.emit('giveaways:update', []);
+            }
             alert('All giveaway data has been deleted');
           }
         });
 
         resetLeaderboardBtn.addEventListener('click', () => {
-          if (confirm('Are you sure you want to reset the leaderboard? All data will be cleared.')) {
-            alert('Leaderboard has been reset');
+          if (confirm('Are you sure you want to reset the leaderboard cache?')) {
+            if (window.DataStore) {
+              window.DataStore.cache.leaderboard = null;
+              window.DataStore.cache.leaderboardExpiry = 0;
+            }
+            alert('Leaderboard cache has been reset');
           }
         });
 

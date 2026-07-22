@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru" class="dark">
 <head>
     <meta charset="UTF-8">
@@ -382,83 +382,13 @@
                 <tr>
                   <th>Rank</th>
                   <th>Player</th>
-                  <th>Wagered (coins)</th>
-                  <th>Prize</th>
-                  <th>Source</th>
+                  <th>Level</th>
+                  <th>Wagered</th>
+                  <th>Earned</th>
+                  <th>Status</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr class="top3">
-                  <td data-label="Rank"><span class="rank-num gold">#1</span></td>
-                  <td data-label="Player" class="player-name">ProGamer_X</td>
-                  <td data-label="Wagered" class="wagered-amount">245,830</td>
-                  <td data-label="Prize" class="prize-amount">500 coins</td>
-                  <td data-label="Source">CSGOWin</td>
-                </tr>
-                <tr class="top3">
-                  <td data-label="Rank"><span class="rank-num silver">#2</span></td>
-                  <td data-label="Player" class="player-name">CryptoKing</td>
-                  <td data-label="Wagered" class="wagered-amount">198,450</td>
-                  <td data-label="Prize" class="prize-amount">300 coins</td>
-                  <td data-label="Source">CSGOWin</td>
-                </tr>
-                <tr class="top3">
-                  <td data-label="Rank"><span class="rank-num bronze">#3</span></td>
-                  <td data-label="Player" class="player-name">NightOwl</td>
-                  <td data-label="Wagered" class="wagered-amount">167,210</td>
-                  <td data-label="Prize" class="prize-amount">200 coins</td>
-                  <td data-label="Source">SkinRave</td>
-                </tr>
-                <tr>
-                  <td data-label="Rank"><span class="rank-num">#4</span></td>
-                  <td data-label="Player" class="player-name">ShadowBlade</td>
-                  <td data-label="Wagered" class="wagered-amount">143,870</td>
-                  <td data-label="Prize">--</td>
-                  <td data-label="Source">CSGOWin</td>
-                </tr>
-                <tr>
-                  <td data-label="Rank"><span class="rank-num">#5</span></td>
-                  <td data-label="Player" class="player-name">AceStrike</td>
-                  <td data-label="Wagered" class="wagered-amount">132,500</td>
-                  <td data-label="Prize">--</td>
-                  <td data-label="Source">SkinRave</td>
-                </tr>
-                <tr>
-                  <td data-label="Rank"><span class="rank-num">#6</span></td>
-                  <td data-label="Player" class="player-name">SkinMaster99</td>
-                  <td data-label="Wagered" class="wagered-amount">118,340</td>
-                  <td data-label="Prize">--</td>
-                  <td data-label="Source">CSGOWin</td>
-                </tr>
-                <tr>
-                  <td data-label="Rank"><span class="rank-num">#7</span></td>
-                  <td data-label="Player" class="player-name">DragonSlayer</td>
-                  <td data-label="Wagered" class="wagered-amount">97,120</td>
-                  <td data-label="Prize">--</td>
-                  <td data-label="Source">ClashArena</td>
-                </tr>
-                <tr>
-                  <td data-label="Rank"><span class="rank-num">#8</span></td>
-                  <td data-label="Player" class="player-name">ViperKing</td>
-                  <td data-label="Wagered" class="wagered-amount">85,670</td>
-                  <td data-label="Prize">--</td>
-                  <td data-label="Source">CSGOWin</td>
-                </tr>
-                <tr>
-                  <td data-label="Rank"><span class="rank-num">#9</span></td>
-                  <td data-label="Player" class="player-name">BlazeRunner</td>
-                  <td data-label="Wagered" class="wagered-amount">74,230</td>
-                  <td data-label="Prize">--</td>
-                  <td data-label="Source">SkinRave</td>
-                </tr>
-                <tr>
-                  <td data-label="Rank"><span class="rank-num">#10</span></td>
-                  <td data-label="Player" class="player-name">IcePhoenix</td>
-                  <td data-label="Wagered" class="wagered-amount">62,890</td>
-                  <td data-label="Prize">--</td>
-                  <td data-label="Source">CSGOWin</td>
-                </tr>
-              </tbody>
+              <tbody data-leaderboard></tbody>
             </table>
           </div>
 
@@ -501,29 +431,100 @@
       }
     </script>
     <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
-    <script src="../assets/js/main.js"></script>
+    <script src="../assets/js/data.js?v=5"></script>
+    <script src="../assets/js/main.js?v=5"></script>
     <script>
-      document.addEventListener('DOMContentLoaded', () => {
+      document.addEventListener('DOMContentLoaded', async () => {
+        const store = window.DataStore;
+        const app = window.CyberSport;
         const forceSyncBtn = document.getElementById('forceSyncBtn');
         const resetBtn = document.getElementById('resetLeaderboardBtn');
         const saveSettingsBtn = document.getElementById('saveSettingsBtn');
         const apiStatusDot = document.querySelector('.api-status-dot');
+        const apiStatusLabel = document.querySelector('.api-status-label strong');
+        const apiStatusDetail = document.querySelector('.api-status-detail');
+        const tbody = document.querySelector('[data-leaderboard]');
 
-        forceSyncBtn.addEventListener('click', () => {
-          apiStatusDot.style.boxShadow = '0 0 12px rgba(52,211,153,0.8)';
+        async function loadLeaderboard(useCache = true) {
+          if (tbody) tbody.classList.add('loading');
+          try {
+            const result = await store.fetchLeaderboard({ take: 10, useCache });
+            apiStatusDot.style.background = 'var(--primary)';
+            apiStatusDot.style.boxShadow = '0 0 6px rgba(52,211,153,0.4)';
+            apiStatusLabel.textContent = 'API Status: Connected';
+            const now = new Date();
+            apiStatusDetail.innerHTML = `Platform: Unbox.gg &mdash; Total: ${result.totalCount} &mdash; Last sync: ${now.toLocaleTimeString('ru-RU')}`;
+            renderAdminLeaderboard(result.list);
+          } catch (err) {
+            apiStatusDot.style.background = 'var(--state-error)';
+            apiStatusDot.style.boxShadow = '0 0 6px rgba(255,69,58,0.4)';
+            apiStatusLabel.textContent = 'API Status: Error';
+            apiStatusDetail.innerHTML = `Platform: Unbox.gg &mdash; Error: ${err.message} &mdash; Using fallback data`;
+          } finally {
+            if (tbody) tbody.classList.remove('loading');
+          }
+        }
+
+        function renderAdminLeaderboard(list) {
+          if (!tbody) return;
+          tbody.innerHTML = list.map((p, i) => {
+            const hasReal = p.wagered !== undefined;
+            const top3 = i < 3 ? 'top3' : '';
+            const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+            let avatarHtml = '';
+            if (p.avatarUrl) {
+              avatarHtml = `<img src="${p.avatarUrl}" alt="${p.username}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">`;
+            } else {
+              avatarHtml = `<div style="width: 32px; height: 32px; border-radius: 50%; background: var(--background-700); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 600; color: var(--text-200);">${p.avatar || p.username?.[0] || '?'}</div>`;
+            }
+            const badgeHtml = (p.badges && p.badges.length > 0)
+              ? `<img src="${p.badges[0].imageUrl}" alt="badge" style="width: 16px; height: 16px; margin-left: 6px;">`
+              : '';
+            const wagered = hasReal ? '$' + p.wagered.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : (p.score || 0).toLocaleString('ru-RU');
+            const earned = hasReal ? '$' + p.earned.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : '--';
+            const level = p.level ? `Lvl ${p.level}` : '--';
+            const tier = p.levelTier ? `<div style="font-size: 0.6875rem; color: var(--text-500); text-transform: uppercase; letter-spacing: 0.05em;">${p.levelTier.replace(/_/g, ' ')}</div>` : '';
+            const statusBadge = p.active
+              ? '<span class="badge badge-green">Active</span>'
+              : p.active === false ? '<span class="badge badge-gray">Inactive</span>' : '<span class="badge badge-gray">--</span>';
+            return `
+              <tr class="${top3}">
+                <td data-label="Rank"><span class="rank-num ${rankClass}">#${p.rank}</span></td>
+                <td data-label="Player">
+                  <div style="display: flex; align-items: center; gap: 0.75rem;">
+                    ${avatarHtml}
+                    <div>
+                      <div style="display: flex; align-items: center;">
+                        <span style="font-weight: 500; color: var(--text-50);">${p.username}</span>
+                        ${badgeHtml}
+                      </div>
+                      ${tier}
+                    </div>
+                  </div>
+                </td>
+                <td data-label="Level" class="mono">${level}</td>
+                <td data-label="Wagered" class="wagered-amount">${wagered}</td>
+                <td data-label="Earned" class="prize-amount">${earned}</td>
+                <td data-label="Status">${statusBadge}</td>
+              </tr>
+            `;
+          }).join('');
+        }
+
+        forceSyncBtn.addEventListener('click', async () => {
           forceSyncBtn.textContent = 'Syncing...';
           forceSyncBtn.disabled = true;
-          
-          setTimeout(() => {
-            apiStatusDot.style.boxShadow = '0 0 6px rgba(52,211,153,0.4)';
-            forceSyncBtn.textContent = 'Force Sync';
-            forceSyncBtn.disabled = false;
-          }, 2000);
+          apiStatusDot.style.boxShadow = '0 0 12px rgba(52,211,153,0.8)';
+          await loadLeaderboard(false);
+          forceSyncBtn.textContent = 'Force Sync';
+          forceSyncBtn.disabled = false;
         });
 
         resetBtn.addEventListener('click', () => {
-          if (confirm('Are you sure you want to reset the leaderboard? All data will be cleared.')) {
-            alert('Leaderboard has been reset successfully');
+          if (confirm('Are you sure you want to reset the leaderboard cache?')) {
+            store.cache.leaderboard = null;
+            store.cache.leaderboardExpiry = 0;
+            loadLeaderboard(false);
           }
         });
 
@@ -537,7 +538,9 @@
           }, 800);
         });
 
-        lucide.createIcons();
+        loadLeaderboard(true);
+
+        if (typeof lucide !== 'undefined') lucide.createIcons();
       });
     </script>
 </body>

@@ -171,6 +171,56 @@
       }
     </script>
     <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
-    <script src="../assets/js/main.js"></script>
-</body>
+    <script src="../assets/js/data.js?v=5"></script>
+    <script src="../assets/js/main.js?v=5"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const store = window.DataStore;
+        if (!store) return;
+
+        const stats = store.getStats();
+        const formatNum = (n) => {
+          if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
+          if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+          return n.toLocaleString('ru-RU');
+        };
+
+        document.querySelectorAll('.stat-card').forEach((card, i) => {
+          const label = card.querySelector('.stat-card-label')?.textContent;
+          const valueEl = card.querySelector('.stat-card-value');
+          if (!label || !valueEl) return;
+          if (label.includes('игроков')) valueEl.textContent = formatNum(stats.players);
+          else if (label.includes('розыгрыши')) valueEl.textContent = stats.activeGiveaways;
+          else if (label.includes('поставлено')) valueEl.textContent = formatNum(stats.totalWagered);
+          else if (label.includes('Discord')) valueEl.textContent = formatNum(stats.discordMembers);
+        });
+
+        const activityList = document.querySelector('.activity-list');
+        if (activityList) {
+          const activity = store.getActivity();
+          activityList.innerHTML = activity.map(a => `
+            <li class="activity-item">
+              <span class="activity-desc"><strong>${a.user}</strong> ${a.action}</span>
+              <span class="activity-time">${a.time}</span>
+            </li>
+          `).join('');
+        }
+
+        const chartRows = document.querySelectorAll('.mini-chart-row');
+        if (chartRows.length) {
+          const days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт'];
+          const base = stats.totalWagered / 5;
+          chartRows.forEach((row, i) => {
+            const pct = 40 + Math.random() * 55;
+            const val = Math.round(base * (pct / 60));
+            const fill = row.querySelector('.mini-chart-bar-fill');
+            const valEl = row.querySelector('.mini-chart-value');
+            if (fill) fill.style.width = pct + '%';
+            if (valEl) valEl.textContent = formatNum(val);
+          });
+        }
+
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      });
+    </script>
 </html>
