@@ -1,3 +1,9 @@
+const API_CONFIG = {
+  baseUrl: 'https://api.unbox.gg/affiliates/public',
+  token: 'cae12055-d7e8-4fac-8f90-68ddae6f1645',
+  leaderboardTake: 10
+};
+
 const MOCK_DATA = {
   stats: {
     players: 12547,
@@ -91,6 +97,10 @@ class DataStore {
   constructor() {
     this.data = MOCK_DATA;
     this.listeners = {};
+    this.cache = {
+      leaderboard: null,
+      leaderboardExpiry: 0
+    };
   }
 
   on(event, callback) {
@@ -112,7 +122,83 @@ class DataStore {
     return this.data.giveaways.filter(g => g.status === 'active');
   }
 
+  async fetchLeaderboard(options = {}) {
+    const {
+      take = API_CONFIG.leaderboardTake,
+      skip = 0,
+      order = 'DESC',
+      useCache = true,
+      cacheMs = 60000
+    } = options;
+
+    const now = Date.now();
+    if (useCache && this.cache.leaderboard && now < this.cache.leaderboardExpiry) {
+      return this.cache.leaderboard;
+    }
+
+    try {
+      const nowDate = new Date();
+      const weekAgo = new Date(nowDate.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+      const params = new URLSearchParams({
+        token: API_CONFIG.token,
+        skip: String(skip),
+        take: String(take),
+        order,
+        from: weekAgo.toISOString(),
+        to: nowDate.toISOString()
+      });
+
+      const res = await fetch(`${API_CONFIG.baseUrl}/applicants?${params.toString()}`);
+
+      if (!res.ok) {
+        throw new Error(`API error: ${res.status}`);
+      }
+
+      const data = await res.json();
+
+      const leaderboard = data.list.map((item, index) => ({
+        rank: skip + index + 1,
+        username: item.user.username,
+        avatarUrl: item.user.avatarUrl,
+        level: item.user.level,
+        levelTier: item.user.levelTier,
+        wagered: parseFloat(item.wagered),
+        earned: parseFloat(item.earned),
+        totalDeposit: parseFloat(item.totalDeposit),
+        withdraw: parseFloat(item.withdraw),
+        active: item.active,
+        firstDepositor: item.firstDepositor,
+        badges: item.user.badges || [],
+        isBot: item.user.isBot
+      }));
+
+      const result = {
+        totalCount: data.totalCount,
+        filteredCount: data.filteredCount,
+        list: leaderboard
+      };
+
+      this.cache.leaderboard = result;
+      this.cache.leaderboardExpiry = now + cacheMs;
+
+      this.emit('leaderboard:update', result);
+
+      return result;
+    } catch (err) {
+      console.warn('Failed to fetch leaderboard, using mock data:', err.message);
+      return {
+        totalCount: this.data.leaderboard.length,
+        filteredCount: this.data.leaderboard.length,
+        list: this.data.leaderboard
+      };
+    }
+  }
+
   getLeaderboard(limit = 10) {
+    if (this.cache.leaderboard) {
+      return this.cache.leaderboard.list.slice(0, limit);
+    }
     return this.data.leaderboard.slice(0, limit);
   }
 

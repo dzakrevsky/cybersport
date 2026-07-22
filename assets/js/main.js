@@ -17,11 +17,15 @@ class CyberSportApp {
     this.renderGiveaways();
     this.renderTestimonials();
     this.renderFAQ();
-    this.renderLeaderboard();
     this.renderBonuses();
     this.renderPartners();
     this.renderClans();
     this.renderActivity();
+
+    const hasLeaderboard = document.querySelector('[data-leaderboard]');
+    if (hasLeaderboard && window.DataStore) {
+      this.loadLeaderboard();
+    }
   }
 
   initLucideIcons() {
@@ -346,6 +350,32 @@ class CyberSportApp {
     this.initFAQ();
   }
 
+  async loadLeaderboard(options = {}) {
+    if (!window.DataStore) return;
+
+    const containers = document.querySelectorAll('[data-leaderboard]');
+    if (!containers.length) return;
+
+    containers.forEach(container => {
+      container.classList.add('loading');
+      container.innerHTML = `
+        <div class="loading-state">
+          <div class="loading-spinner"></div>
+          <p>Загрузка лидерборда...</p>
+        </div>
+      `;
+    });
+
+    const result = await window.DataStore.fetchLeaderboard(options);
+    this.renderLeaderboard();
+
+    containers.forEach(container => {
+      container.classList.remove('loading');
+    });
+
+    return result;
+  }
+
   renderLeaderboard() {
     const containers = document.querySelectorAll('[data-leaderboard]');
     if (!containers.length || !window.DataStore) return;
@@ -367,26 +397,46 @@ class CyberSportApp {
       const isTable = container.tagName === 'TBODY';
 
       const rows = leaderboard.map(player => {
-        const changeIcon = player.change === 'up' ? 'trending-up' : player.change === 'down' ? 'trending-down' : 'minus';
-        const changeColor = player.change === 'up' ? '#34d399' : player.change === 'down' ? '#f87171' : 'var(--text-500)';
+        const hasRealData = player.wagered !== undefined;
+        const hasAvatar = player.avatarUrl !== undefined;
 
         if (isTable) {
+          const wageredFormatted = hasRealData
+            ? '$' + player.wagered.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+            : player.score.toLocaleString('ru-RU');
+
+          const earnedFormatted = hasRealData
+            ? '$' + player.earned.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+            : '';
+
+          let avatarHtml = '';
+          if (hasAvatar) {
+            avatarHtml = `<img src="${player.avatarUrl}" alt="${player.username}" style="width: 32px; height: 32px; border-radius: 50%; object-fit: cover;">`;
+          } else {
+            avatarHtml = `<div style="width: 32px; height: 32px; border-radius: 50%; background: var(--background-700); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 600; color: var(--text-200);">${player.avatar}</div>`;
+          }
+
+          const badgeHtml = (player.badges && player.badges.length > 0)
+            ? `<img src="${player.badges[0].imageUrl}" alt="badge" style="width: 16px; height: 16px; margin-left: 6px;">`
+            : '';
+
           return `
             <tr>
               <td class="mono" style="font-weight: 600;">${player.rank}</td>
               <td>
                 <div style="display: flex; align-items: center; gap: 0.75rem;">
-                  <div style="width: 32px; height: 32px; border-radius: 50%; background: var(--background-700); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 600; color: var(--text-200);">${player.avatar}</div>
+                  ${avatarHtml}
                   <div>
-                    <div style="font-weight: 500; color: var(--text-50);">${player.username}</div>
-                    <div style="font-size: 0.75rem; color: var(--text-500); text-transform: uppercase; letter-spacing: 0.05em;">${player.clan}</div>
+                    <div style="display: flex; align-items: center;">
+                      <span style="font-weight: 500; color: var(--text-50);">${player.username}</span>
+                      ${badgeHtml}
+                    </div>
+                    ${player.levelTier ? `<div style="font-size: 0.6875rem; color: var(--text-500); text-transform: uppercase; letter-spacing: 0.05em;">Level ${player.level} · ${player.levelTier.replace(/_/g, ' ')}</div>` : ''}
                   </div>
                 </div>
               </td>
-              <td class="mono">${player.score.toLocaleString('ru-RU')}</td>
-              <td style="color: ${changeColor};">
-                <i data-lucide="${changeIcon}" style="width: 16px; height: 16px;"></i>
-              </td>
+              <td class="mono">${wageredFormatted}</td>
+              ${hasRealData ? `<td class="mono" style="color: var(--primary);">${earnedFormatted}</td>` : ''}
             </tr>
           `;
         }
@@ -396,20 +446,28 @@ class CyberSportApp {
         else if (player.rank === 2) rankClass = 'rank-silver';
         else if (player.rank === 3) rankClass = 'rank-bronze';
 
+        const scoreDisplay = hasRealData
+          ? '$' + player.wagered.toLocaleString('ru-RU', { maximumFractionDigits: 0 })
+          : player.score.toLocaleString('ru-RU');
+
+        let avatarHtml = '';
+        if (hasAvatar) {
+          avatarHtml = `<img src="${player.avatarUrl}" alt="${player.username}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+        } else {
+          avatarHtml = player.avatar || '';
+        }
+
         return `
           <div class="leaderboard-row">
             <div class="lb-rank ${rankClass}">${player.rank}</div>
             <div class="lb-player">
-              <div class="lb-avatar">${player.avatar}</div>
+              <div class="lb-avatar">${avatarHtml}</div>
               <div>
                 <div class="lb-username">${player.username}</div>
-                <div class="lb-clan">${player.clan}</div>
+                <div class="lb-clan">${player.levelTier ? 'Level ' + player.level : player.clan || ''}</div>
               </div>
             </div>
-            <div class="lb-score">${player.score.toLocaleString('ru-RU')}</div>
-            <div class="lb-change" style="color: ${changeColor};">
-              <i data-lucide="${changeIcon}" style="width: 16px; height: 16px;"></i>
-            </div>
+            <div class="lb-score">${scoreDisplay}</div>
           </div>
         `;
       }).join('');
