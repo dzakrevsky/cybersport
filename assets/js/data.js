@@ -1,8 +1,17 @@
+const API_SOURCES = [
+  {
+    id: 'unbox',
+    name: 'Unbox.gg',
+    proxyUrl: '/api/leaderboard',
+    externalUrl: 'https://api.unbox.gg/affiliates/public/applicants',
+    token: 'cae12055-d7e8-4fac-8f90-68ddae6f1645',
+    enabled: true
+  }
+];
+
 const API_CONFIG = {
-  baseUrl: '/api/leaderboard',
-  externalBaseUrl: 'https://api.unbox.gg/affiliates/public/applicants',
-  token: 'cae12055-d7e8-4fac-8f90-68ddae6f1645',
-  leaderboardTake: 10
+  leaderboardTake: 10,
+  cacheMs: 60000
 };
 
 const MOCK_DATA = {
@@ -156,7 +165,7 @@ class DataStore {
       skip = 0,
       order = 'DESC',
       useCache = true,
-      cacheMs = 60000
+      cacheMs = API_CONFIG.cacheMs
     } = options;
 
     const now = Date.now();
@@ -164,31 +173,68 @@ class DataStore {
       return this.cache.leaderboard;
     }
 
+    const sources = API_SOURCES.filter(s => s.enabled);
+    const nowDate = new Date();
+    const weekAgo = new Date(nowDate.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+    const results = await Promise.allSettled(
+      sources.map(source => this._fetchSource(source, { take, skip, order, from: weekAgo, to: nowDate }))
+    );
+
+    const successResults = results
+      .filter(r => r.status === 'fulfilled')
+      .map(r => r.value);
+
+    if (successResults.length === 0) {
+      console.warn('All API sources failed, using mock data');
+      return {
+        totalCount: this.data.leaderboard.length,
+        filteredCount: this.data.leaderboard.length,
+        list: this.data.leaderboard
+      };
+    }
+
+    const merged = this._mergeLeaderboards(successResults, { take, skip, order });
+
+    this.cache.leaderboard = merged;
+    this.cache.leaderboardExpiry = now + cacheMs;
+    this.cache.sourceCount = successResults.length;
+    this.cache.totalSources = sources.length;
+
+    this.emit('leaderboard:update', merged);
+    return merged;
+  }
+
+  async _fetchSource(source, { take, skip, order, from, to }) {
+    const params = new URLSearchParams({
+      token: source.token,
+      skip: String(skip),
+      take: String(take),
+      order,
+      from: from.toISOString(),
+      to: to.toISOString()
+    });
+
+    const query = params.toString();
+    let res;
+
     try {
-      const nowDate = new Date();
-      const weekAgo = new Date(nowDate.getTime() - 7 * 24 * 60 * 60 * 1000);
+      res = await fetch(`${source.proxyUrl}?${query}`);
+      if (!res.ok) throw new Error(`Proxy error: ${res.status}`);
+    } catch (proxyErr) {
+      res = await fetch(`${source.externalUrl}?${query}`);
+      if (!res.ok) throw new Error(`API error: ${res.status}`);
+    }
 
-      const params = new URLSearchParams({
-        token: API_CONFIG.token,
-        skip: String(skip),
-        take: String(take),
-        order,
-        from: weekAgo.toISOString(),
-        to: nowDate.toISOString()
-      });
-
-      const query = params.toString();
-      let res;
-      try {
-        res = await fetch(`${API_CONFIG.baseUrl}?${query}`);
-        if (!res.ok) throw new Error(`Proxy API error: ${res.status}`);
-      } catch (proxyErr) {
-        res = await fetch(`${API_CONFIG.externalBaseUrl}?${query}`);
-      }
-
-      const data = await res.json();
-
-      const leaderboard = data.list.map((item, index) => ({
+    const data = await res.json();
+    return {
+      source: source.id,
+      sourceName: source.name,
+      totalCount: data.totalCount,
+      filteredCount: data.filteredCount,
+      list: data.list.map((item, index) => ({
+        source: source.id,
+        sourceName: source.name,
         rank: skip + index + 1,
         username: item.user.username,
         avatarUrl: item.user.avatarUrl,
@@ -202,28 +248,38 @@ class DataStore {
         firstDepositor: item.firstDepositor,
         badges: item.user.badges || [],
         isBot: item.user.isBot
-      }));
+      }))
+    };
+  }
 
-      const result = {
-        totalCount: data.totalCount,
-        filteredCount: data.filteredCount,
-        list: leaderboard
-      };
+  _mergeLeaderboards(sourceResults, { take, skip, order }) {
+    const userMap = new Map();
+    let totalCount = 0;
+    let filteredCount = 0;
 
-      this.cache.leaderboard = result;
-      this.cache.leaderboardExpiry = now + cacheMs;
+    sourceResults.forEach(result => {
+      totalCount += result.totalCount;
+      filteredCount += result.filteredCount;
+      result.list.forEach(player => {
+        const key = `${player.source}:${player.username}`;
+        userMap.set(key, player);
+      });
+    });
 
-      this.emit('leaderboard:update', result);
+    const mergedList = Array.from(userMap.values()).sort((a, b) => {
+      return order === 'DESC' ? b.wagered - a.wagered : a.wagered - b.wagered;
+    }).map((player, index) => ({
+      ...player,
+      rank: skip + index + 1
+    }));
 
-      return result;
-    } catch (err) {
-      console.warn('Failed to fetch leaderboard, using mock data:', err.message);
-      return {
-        totalCount: this.data.leaderboard.length,
-        filteredCount: this.data.leaderboard.length,
-        list: this.data.leaderboard
-      };
-    }
+    return {
+      totalCount,
+      filteredCount,
+      list: mergedList.slice(0, take),
+      sourceCount: sourceResults.length,
+      totalSources: API_SOURCES.filter(s => s.enabled).length
+    };
   }
 
   getLeaderboard(limit = 10) {

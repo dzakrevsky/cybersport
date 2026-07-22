@@ -23,7 +23,8 @@ class CyberSportApp {
     this.renderActivity();
 
     const hasLeaderboard = document.querySelector('[data-leaderboard]');
-    if (hasLeaderboard && window.DataStore) {
+    const hasStats = document.querySelector('[data-stats]');
+    if ((hasLeaderboard || hasStats) && window.DataStore) {
       this.loadLeaderboard();
     }
   }
@@ -237,12 +238,12 @@ class CyberSportApp {
           <div class="stat-label">Игроков</div>
         </div>
         <div class="stat-item">
-          <div class="stat-number">$${formatNumber(stats.bonusesPaid)}+</div>
-          <div class="stat-label">Раздано бонусов</div>
+          <div class="stat-number">$${formatNumber(stats.totalWagered)}+</div>
+          <div class="stat-label">Всего поставлено</div>
         </div>
         <div class="stat-item">
-          <div class="stat-number">${stats.clans}</div>
-          <div class="stat-label">Клана</div>
+          <div class="stat-number">$${formatNumber(stats.totalEarned || stats.bonusesPaid)}+</div>
+          <div class="stat-label">Заработано</div>
         </div>
         <div class="stat-item">
           <div class="stat-number">24/7</div>
@@ -356,8 +357,6 @@ class CyberSportApp {
     if (!window.DataStore) return;
 
     const containers = document.querySelectorAll('[data-leaderboard]');
-    if (!containers.length) return;
-
     containers.forEach(container => {
       container.classList.add('loading');
       container.innerHTML = `
@@ -369,7 +368,9 @@ class CyberSportApp {
     });
 
     const result = await window.DataStore.fetchLeaderboard(options);
+    this.renderStats();
     this.renderLeaderboard();
+    this.renderActivity();
 
     containers.forEach(container => {
       container.classList.remove('loading');
