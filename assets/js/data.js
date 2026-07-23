@@ -165,9 +165,9 @@ class DataStore {
   }
 
   async fetchStats() {
-    const allTimeFrom = new Date('2020-01-01T00:00:00Z');
     const now = new Date();
-    return this.fetchLeaderboard({ from: allTimeFrom, to: now, take: 100, useCache: true });
+    const from = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+    return this.fetchLeaderboard({ from, to: now, take: 100, useCache: true });
   }
 
   getGiveaways() {
