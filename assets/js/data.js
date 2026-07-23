@@ -391,6 +391,17 @@ class DataStore {
     return newGiveaway;
   }
 
+  updateGiveaway(id, updates) {
+    const index = this.data.giveaways.findIndex(g => g.id === id);
+    if (index === -1) return null;
+    this.data.giveaways[index] = {
+      ...this.data.giveaways[index],
+      ...updates
+    };
+    this.emit('giveaways:update', this.data.giveaways);
+    return this.data.giveaways[index];
+  }
+
   deleteGiveaway(id) {
     this.data.giveaways = this.data.giveaways.filter(g => g.id !== id);
     this.emit('giveaways:update', this.data.giveaways);

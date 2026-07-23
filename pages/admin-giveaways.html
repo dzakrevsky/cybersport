@@ -375,10 +375,10 @@
 
     <div class="modal-overlay" id="giveawayModal">
       <div class="modal-card">
-        <div class="modal-title">Create Giveaway</div>
+        <div class="modal-title" id="modalTitle">Create Giveaway</div>
         <div class="form-group">
           <label class="form-label">Platform</label>
-          <select class="form-select">
+          <select class="form-select" id="giveawayPlatform">
             <option>Discord</option>
             <option>Twitter/X</option>
             <option>Instagram</option>
@@ -386,23 +386,23 @@
         </div>
         <div class="form-group">
           <label class="form-label">Prize Name</label>
-          <input type="text" class="form-input" placeholder="Enter prize name">
+          <input type="text" class="form-input" id="giveawayPrize" placeholder="Enter prize name">
         </div>
         <div class="form-group">
           <label class="form-label">Description</label>
-          <textarea class="form-textarea" placeholder="Describe the giveaway prize and rules"></textarea>
+          <textarea class="form-textarea" id="giveawayDesc" placeholder="Describe the giveaway prize and rules"></textarea>
         </div>
         <div class="form-group">
           <label class="form-label">End Date</label>
-          <input type="date" class="form-input">
+          <input type="date" class="form-input" id="giveawayEndDate">
         </div>
         <div class="form-group">
           <label class="form-label">Max Participants</label>
-          <input type="number" class="form-input" placeholder="0 = unlimited">
+          <input type="number" class="form-input" id="giveawayMaxParticipants" placeholder="0 = unlimited">
         </div>
         <div class="modal-actions">
           <button class="btn-cancel" id="cancelGiveawayBtn">Cancel</button>
-          <button class="btn-primary">Create</button>
+          <button class="btn-primary" id="saveGiveawayBtn">Create</button>
         </div>
       </div>
     </div>
@@ -413,15 +413,57 @@
       }
     </script>
     <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
-    <script src="../assets/js/data.js?v=15"></script>
-    <script src="../assets/js/main.js?v=11"></script>
+    <script src="../assets/js/data.js?v=16"></script>
+    <script src="../assets/js/main.js?v=16"></script>
     <script>
       document.addEventListener('DOMContentLoaded', () => {
         const store = window.DataStore;
         const createBtn = document.getElementById('createGiveawayBtn');
         const cancelBtn = document.getElementById('cancelGiveawayBtn');
+        const saveBtn = document.getElementById('saveGiveawayBtn');
         const modal = document.getElementById('giveawayModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const platformInput = document.getElementById('giveawayPlatform');
+        const prizeInput = document.getElementById('giveawayPrize');
+        const descInput = document.getElementById('giveawayDesc');
+        const endDateInput = document.getElementById('giveawayEndDate');
+        const maxParticipantsInput = document.getElementById('giveawayMaxParticipants');
         const tbody = document.querySelector('[data-giveaways]');
+        let editingId = null;
+
+        function formatDateInput(date) {
+          if (!date) return '';
+          const d = new Date(date);
+          if (isNaN(d.getTime())) return '';
+          const year = d.getFullYear();
+          const month = String(d.getMonth() + 1).padStart(2, '0');
+          const day = String(d.getDate()).padStart(2, '0');
+          return `${year}-${month}-${day}`;
+        }
+
+        function openModal(giveaway = null) {
+          editingId = giveaway ? giveaway.id : null;
+          modalTitle.textContent = giveaway ? 'Edit Giveaway' : 'Create Giveaway';
+          saveBtn.textContent = giveaway ? 'Save' : 'Create';
+          platformInput.value = giveaway?.platform || 'Discord';
+          prizeInput.value = giveaway?.title || giveaway?.prize || '';
+          descInput.value = giveaway?.description || '';
+          endDateInput.value = formatDateInput(giveaway?.endDate);
+          maxParticipantsInput.value = giveaway?.maxParticipants || '';
+          modal.classList.add('active');
+        }
+
+        function closeModal() {
+          modal.classList.remove('active');
+          editingId = null;
+          modalTitle.textContent = 'Create Giveaway';
+          saveBtn.textContent = 'Create';
+          platformInput.value = 'Discord';
+          prizeInput.value = '';
+          descInput.value = '';
+          endDateInput.value = '';
+          maxParticipantsInput.value = '';
+        }
 
         function formatEndDate(date) {
           if (!date) return 'Not set';
@@ -467,6 +509,14 @@
             </tr>
           `).join('');
 
+          tbody.querySelectorAll('[data-action="edit"]').forEach(btn => {
+            btn.addEventListener('click', () => {
+              const id = btn.closest('tr').dataset.id;
+              const giveaway = store.data.giveaways.find(g => g.id === id);
+              if (giveaway) openModal(giveaway);
+            });
+          });
+
           tbody.querySelectorAll('[data-action="delete"]').forEach(btn => {
             btn.addEventListener('click', () => {
               const id = btn.closest('tr').dataset.id;
@@ -479,32 +529,32 @@
         }
 
         createBtn.addEventListener('click', () => {
-          modal.classList.add('active');
+          openModal();
         });
 
         cancelBtn.addEventListener('click', () => {
-          modal.classList.remove('active');
+          closeModal();
         });
 
         modal.addEventListener('click', (e) => {
           if (e.target === modal) {
-            modal.classList.remove('active');
+            closeModal();
           }
         });
 
-        modal.querySelector('.btn-primary').addEventListener('click', () => {
-          const platform = modal.querySelector('select').value;
-          const prize = modal.querySelector('input[type="text"]').value;
-          const desc = modal.querySelector('textarea').value;
-          const endDate = modal.querySelector('input[type="date"]').value;
-          const maxPart = modal.querySelector('input[type="number"]').value;
+        saveBtn.addEventListener('click', () => {
+          const platform = platformInput.value;
+          const prize = prizeInput.value.trim();
+          const desc = descInput.value.trim();
+          const endDate = endDateInput.value;
+          const maxPart = maxParticipantsInput.value;
 
           if (!prize) {
             alert('Enter prize name');
             return;
           }
 
-          store.addGiveaway({
+          const payload = {
             platform,
             title: prize,
             prize,
@@ -512,13 +562,15 @@
             endDate: endDate ? new Date(endDate) : null,
             maxParticipants: parseInt(maxPart) || 0,
             status: 'active'
-          });
+          };
 
-          modal.classList.remove('active');
-          modal.querySelectorAll('input, textarea, select').forEach(el => {
-            if (el.type === 'select-one') el.selectedIndex = 0;
-            else el.value = '';
-          });
+          if (editingId) {
+            store.updateGiveaway(editingId, payload);
+          } else {
+            store.addGiveaway(payload);
+          }
+
+          closeModal();
           renderGiveaways();
         });
 
