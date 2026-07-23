@@ -308,12 +308,14 @@ class DataStore {
   }
 
   getPeriodEnd() {
+    const periodMs = API_CONFIG.periodDays * 24 * 60 * 60 * 1000;
+    // Anchor: Monday 00:00:00 UTC of the week when the race starts.
+    // This keeps the period static across page reloads and tab switches.
+    const anchor = new Date('2026-07-20T00:00:00Z').getTime();
     const now = Date.now();
-    if (this.cache.periodEnd && now < this.cache.periodEnd - API_CONFIG.periodDays * 24 * 60 * 60 * 1000 + 1000) {
-      return new Date(this.cache.periodEnd);
-    }
-    this.cache.periodEnd = now + API_CONFIG.periodDays * 24 * 60 * 60 * 1000;
-    return new Date(this.cache.periodEnd);
+    const periodsPassed = Math.floor((now - anchor) / periodMs);
+    const nextEnd = anchor + (periodsPassed + 1) * periodMs;
+    return new Date(nextEnd);
   }
 
   getLeaderboard(limit = 10) {
