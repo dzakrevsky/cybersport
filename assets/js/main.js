@@ -25,9 +25,20 @@ class CyberSportApp {
 
     const hasLeaderboard = document.querySelector('[data-leaderboard]');
     const hasStats = document.querySelector('[data-stats]');
-    if ((hasLeaderboard || hasStats) && window.DataStore) {
+    const hasPodium = document.querySelector('[data-podium]');
+    if (hasLeaderboard && window.DataStore) {
       this.loadLeaderboard();
+    } else if ((hasStats || hasPodium) && window.DataStore) {
+      this.loadStats();
     }
+  }
+
+  async loadStats() {
+    if (!window.DataStore) return;
+    await window.DataStore.fetchStats();
+    this.renderStats();
+    this.renderPodium();
+    this.renderActivity();
   }
 
   initLucideIcons() {

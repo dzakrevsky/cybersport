@@ -127,6 +127,9 @@ class DataStore {
   }
 
   getStats() {
+    if (this.cache.allTimeStats) {
+      return this.cache.allTimeStats;
+    }
     if (this.cache.leaderboard && this.cache.leaderboard.list.length > 0) {
       return this.getComputedStats();
     }
@@ -134,14 +137,22 @@ class DataStore {
   }
 
   getComputedStats() {
+    if (this.cache.allTimeStats) {
+      return this.cache.allTimeStats;
+    }
     if (!this.cache.leaderboard || !this.cache.leaderboard.list.length) {
       return this.data.stats;
     }
-    const list = this.cache.leaderboard.list;
+    return this._computeStatsFromResult(this.cache.leaderboard);
+  }
+
+  _computeStatsFromResult(result) {
+    const list = result.list;
+    if (!list || !list.length) return this.data.stats;
     const totalWagered = list.reduce((sum, p) => sum + (p.wagered || 0), 0);
     const totalEarned = list.reduce((sum, p) => sum + (p.earned || 0), 0);
     const activePlayers = list.filter(p => p.active).length;
-    const totalCount = this.cache.leaderboard.totalCount || list.length;
+    const totalCount = result.totalCount || list.length;
 
     return {
       players: totalCount,
@@ -157,6 +168,12 @@ class DataStore {
     };
   }
 
+  async fetchStats() {
+    const allTimeFrom = new Date('2020-01-01T00:00:00Z');
+    const now = new Date();
+    return this.fetchLeaderboard({ from: allTimeFrom, to: now, take: 100, useCache: true });
+  }
+
   getGiveaways() {
     return this.data.giveaways.filter(g => g.status === 'active');
   }
@@ -167,20 +184,27 @@ class DataStore {
       skip = 0,
       order = 'DESC',
       useCache = true,
-      cacheMs = API_CONFIG.cacheMs
+      cacheMs = API_CONFIG.cacheMs,
+      from: customFrom,
+      to: customTo
     } = options;
 
+    const isAllTime = customFrom !== undefined;
+    const cacheKey = isAllTime ? 'allTimeLeaderboard' : 'leaderboard';
+    const expiryKey = isAllTime ? 'allTimeLeaderboardExpiry' : 'leaderboardExpiry';
+
     const now = Date.now();
-    if (useCache && this.cache.leaderboard && now < this.cache.leaderboardExpiry) {
-      return this.cache.leaderboard;
+    if (useCache && this.cache[cacheKey] && now < this.cache[expiryKey]) {
+      return this.cache[cacheKey];
     }
 
     const sources = API_SOURCES.filter(s => s.enabled);
     const nowDate = new Date();
-    const weekLater = new Date(nowDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+    const fromDate = customFrom ? new Date(customFrom) : nowDate;
+    const toDate = customTo ? new Date(customTo) : new Date(nowDate.getTime() + 7 * 24 * 60 * 60 * 1000);
 
     const results = await Promise.allSettled(
-      sources.map(source => this._fetchSource(source, { take, skip, order, from: nowDate, to: weekLater }))
+      sources.map(source => this._fetchSource(source, { take, skip, order, from: fromDate, to: toDate }))
     );
 
     const successResults = results
@@ -198,10 +222,14 @@ class DataStore {
 
     const merged = this._mergeLeaderboards(successResults, { take, skip, order });
 
-    this.cache.leaderboard = merged;
-    this.cache.leaderboardExpiry = now + cacheMs;
+    this.cache[cacheKey] = merged;
+    this.cache[expiryKey] = now + cacheMs;
     this.cache.sourceCount = successResults.length;
     this.cache.totalSources = sources.length;
+
+    if (isAllTime) {
+      this.cache.allTimeStats = this._computeStatsFromResult(merged);
+    }
 
     this.emit('leaderboard:update', merged);
     return merged;

@@ -272,9 +272,65 @@
         background: rgba(255,69,58,0.1);
       }
 
+      .date-range-bar {
+        background: var(--card);
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        padding: 1rem 1.5rem;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .date-range-left {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        flex-wrap: wrap;
+      }
+
+      .date-range-bar .form-input,
+      .date-range-bar .form-select {
+        width: auto;
+        min-width: 140px;
+      }
+
+      .date-range-bar .form-input[type="date"] {
+        color-scheme: dark;
+      }
+
+      .date-range-bar .btn-primary {
+        width: auto;
+        margin-top: 0;
+        white-space: nowrap;
+      }
+
+      .date-range-bar .date-range-info {
+        font-size: 0.75rem;
+        color: var(--text-400);
+        margin-left: 0.5rem;
+      }
+
       @media (max-width: 1024px) {
         .lb-two-col {
           grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .date-range-bar {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .date-range-left {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        .date-range-bar .btn-primary {
+          width: 100%;
         }
       }
 
@@ -375,6 +431,23 @@
           </div>
         </div>
 
+        <div class="date-range-bar">
+          <div class="date-range-left">
+            <label class="form-label" style="margin: 0;">Период</label>
+            <select class="form-select" id="datePreset">
+              <option value="week">Последняя неделя</option>
+              <option value="month">Последний месяц</option>
+              <option value="quarter">Последние 3 месяца</option>
+              <option value="all">За всё время</option>
+              <option value="custom">Свой диапазон</option>
+            </select>
+            <input type="date" class="form-input" id="dateFrom" style="display:none;">
+            <input type="date" class="form-input" id="dateTo" style="display:none;">
+            <span class="date-range-info" id="dateRangeInfo"></span>
+          </div>
+          <button class="btn-primary" id="applyDateRange">Применить</button>
+        </div>
+
         <div class="lb-two-col">
           <div class="admin-table-wrap">
             <table class="admin-table">
@@ -431,12 +504,11 @@
       }
     </script>
     <script src="https://unpkg.com/lucide@1.8.0/dist/umd/lucide.min.js"></script>
-    <script src="../assets/js/data.js?v=9"></script>
-    <script src="../assets/js/main.js?v=9"></script>
+    <script src="../assets/js/data.js?v=10"></script>
+    <script src="../assets/js/main.js?v=10"></script>
     <script>
       document.addEventListener('DOMContentLoaded', async () => {
         const store = window.DataStore;
-        const app = window.CyberSport;
         const forceSyncBtn = document.getElementById('forceSyncBtn');
         const resetBtn = document.getElementById('resetLeaderboardBtn');
         const saveSettingsBtn = document.getElementById('saveSettingsBtn');
@@ -445,15 +517,93 @@
         const apiStatusDetail = document.querySelector('.api-status-detail');
         const tbody = document.querySelector('[data-leaderboard]');
 
-        async function loadLeaderboard(useCache = true) {
+        const datePreset = document.getElementById('datePreset');
+        const dateFromInput = document.getElementById('dateFrom');
+        const dateToInput = document.getElementById('dateTo');
+        const dateRangeInfo = document.getElementById('dateRangeInfo');
+        const applyDateRangeBtn = document.getElementById('applyDateRange');
+
+        function formatDate(d) {
+          if (!d) return '';
+          return d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
+
+        function getDateRangeFromPreset(preset) {
+          const now = new Date();
+          const to = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+          let from = new Date(now);
+
+          switch (preset) {
+            case 'week':
+              from.setDate(now.getDate() - 7);
+              return { from, to };
+            case 'month':
+              from.setMonth(now.getMonth() - 1);
+              return { from, to };
+            case 'quarter':
+              from.setMonth(now.getMonth() - 3);
+              return { from, to };
+            case 'all':
+              from = new Date('2020-01-01T00:00:00Z');
+              return { from, to };
+            case 'custom':
+              const fromVal = dateFromInput.value;
+              const toVal = dateToInput.value;
+              if (!fromVal || !toVal) return null;
+              return { from: new Date(fromVal + 'T00:00:00'), to: new Date(toVal + 'T23:59:59') };
+            default:
+              from.setDate(now.getDate() - 7);
+              return { from, to };
+          }
+        }
+
+        function updatePresetUI() {
+          const preset = datePreset.value;
+          if (preset === 'custom') {
+            dateFromInput.style.display = '';
+            dateToInput.style.display = '';
+            if (!dateFromInput.value) {
+              const now = new Date();
+              const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+              dateFromInput.value = weekAgo.toISOString().split('T')[0];
+              dateToInput.value = now.toISOString().split('T')[0];
+            }
+          } else {
+            dateFromInput.style.display = 'none';
+            dateToInput.style.display = 'none';
+          }
+          updateRangeInfo();
+        }
+
+        function updateRangeInfo() {
+          const range = getDateRangeFromPreset(datePreset.value);
+          if (!range) {
+            dateRangeInfo.textContent = 'Выберите даты';
+            return;
+          }
+          dateRangeInfo.textContent = `${formatDate(range.from)} — ${formatDate(range.to)}`;
+        }
+
+        async function loadLeaderboard(useCache = true, customRange = null) {
           if (tbody) tbody.classList.add('loading');
+          applyDateRangeBtn.disabled = true;
+          applyDateRangeBtn.textContent = 'Загрузка...';
           try {
-            const result = await store.fetchLeaderboard({ take: 10, useCache });
+            const options = { take: 10, useCache };
+            if (customRange) {
+              options.from = customRange.from;
+              options.to = customRange.to;
+              options.useCache = false;
+            }
+            const result = await store.fetchLeaderboard(options);
             apiStatusDot.style.background = 'var(--primary)';
             apiStatusDot.style.boxShadow = '0 0 6px rgba(52,211,153,0.4)';
             apiStatusLabel.textContent = 'API Status: Connected';
             const now = new Date();
-            apiStatusDetail.innerHTML = `Platform: Unbox.gg &mdash; Total: ${result.totalCount} &mdash; Last sync: ${now.toLocaleTimeString('ru-RU')}`;
+            const rangeLabel = customRange
+              ? `${formatDate(customRange.from)} — ${formatDate(customRange.to)}`
+              : 'Последняя неделя';
+            apiStatusDetail.innerHTML = `Platform: Unbox.gg &mdash; Period: ${rangeLabel} &mdash; Total: ${result.totalCount} &mdash; Last sync: ${now.toLocaleTimeString('ru-RU')}`;
             renderAdminLeaderboard(result.list);
           } catch (err) {
             apiStatusDot.style.background = 'var(--state-error)';
@@ -462,6 +612,8 @@
             apiStatusDetail.innerHTML = `Platform: Unbox.gg &mdash; Error: ${err.message} &mdash; Using fallback data`;
           } finally {
             if (tbody) tbody.classList.remove('loading');
+            applyDateRangeBtn.disabled = false;
+            applyDateRangeBtn.textContent = 'Применить';
           }
         }
 
@@ -511,20 +663,38 @@
           }).join('');
         }
 
+        datePreset.addEventListener('change', updatePresetUI);
+        dateFromInput.addEventListener('change', updateRangeInfo);
+        dateToInput.addEventListener('change', updateRangeInfo);
+
+        applyDateRangeBtn.addEventListener('click', async () => {
+          const preset = datePreset.value;
+          const range = getDateRangeFromPreset(preset);
+          if (!range) {
+            alert('Выберите даты "от" и "до" для своего диапазона');
+            return;
+          }
+          await loadLeaderboard(false, range);
+        });
+
         forceSyncBtn.addEventListener('click', async () => {
           forceSyncBtn.textContent = 'Syncing...';
           forceSyncBtn.disabled = true;
           apiStatusDot.style.boxShadow = '0 0 12px rgba(52,211,153,0.8)';
-          await loadLeaderboard(false);
+          const range = getDateRangeFromPreset(datePreset.value);
+          await loadLeaderboard(false, range);
           forceSyncBtn.textContent = 'Force Sync';
           forceSyncBtn.disabled = false;
         });
 
         resetBtn.addEventListener('click', () => {
-          if (confirm('Are you sure you want to reset the leaderboard cache?')) {
+          if (confirm('Сбросить кэш лидерборда?')) {
             store.cache.leaderboard = null;
             store.cache.leaderboardExpiry = 0;
-            loadLeaderboard(false);
+            store.cache.allTimeLeaderboard = null;
+            store.cache.allTimeLeaderboardExpiry = 0;
+            const range = getDateRangeFromPreset(datePreset.value);
+            loadLeaderboard(false, range);
           }
         });
 
@@ -538,7 +708,9 @@
           }, 800);
         });
 
-        loadLeaderboard(true);
+        updatePresetUI();
+        const initialRange = getDateRangeFromPreset('week');
+        loadLeaderboard(true, initialRange);
 
         if (typeof lucide !== 'undefined') lucide.createIcons();
       });
