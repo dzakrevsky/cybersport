@@ -32,7 +32,7 @@ const MOCK_DATA = {
       id: 'g1',
       title: 'Stake Weekly Race',
       status: 'active',
-      description: 'Призовой фонд $5,000. Участвуйте в еженедельных гонках и занимайте призовые места.',
+      description: 'Prize pool $5,000. Join the weekly races and claim your spot on the leaderboard.',
       prize: '$5,000',
       endDate: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000 + 14 * 60 * 60 * 1000),
       participants: 342
@@ -59,40 +59,40 @@ const MOCK_DATA = {
   ],
 
   activity: [
-    { id: 1, user: 'ProGamer_X', action: 'поставил 500 монет', time: '2 мин назад' },
-    { id: 2, user: 'SkinMaster99', action: 'присоединился к розыгрышу Discord', time: '5 мин назад' },
-    { id: 3, user: 'CryptoKing', action: 'выиграл приз "VIP набор"', time: '18 мин назад' },
-    { id: 4, user: 'NightOwl', action: 'поставил 1,200 монет', time: '32 мин назад' },
-    { id: 5, user: 'ShadowBlade', action: 'выполнил задание Twitter/X', time: '1ч назад' },
-    { id: 6, user: 'AceStrike', action: 'присоединился по реферальной ссылке', time: '2ч назад' }
+    { id: 1, user: 'ProGamer_X', action: 'wagered 500 coins', time: '2 min ago' },
+    { id: 2, user: 'SkinMaster99', action: 'joined the Discord giveaway', time: '5 min ago' },
+    { id: 3, user: 'CryptoKing', action: 'won the "VIP Pack" prize', time: '18 min ago' },
+    { id: 4, user: 'NightOwl', action: 'wagered 1,200 coins', time: '32 min ago' },
+    { id: 5, user: 'ShadowBlade', action: 'completed the Twitter/X task', time: '1h ago' },
+    { id: 6, user: 'AceStrike', action: 'joined via referral link', time: '2h ago' }
   ],
 
   bonuses: [
-    { id: 1, title: 'Welcome Bonus', type: 'welcome', amount: '100% up to $500', description: 'Получите бонус на первый депозит' },
-    { id: 2, title: 'Weekly Cashback', type: 'cashback', amount: '15%', description: 'Еженедельный рейкбек на проигрыши' },
-    { id: 3, title: 'Free Spins Pack', type: 'freespins', amount: '50 FS', description: 'Бесплатные вращения в слотах' },
-    { id: 4, title: 'Reload Bonus', type: 'reload', amount: '50% up to $200', description: 'Бонус на повторный депозит' }
+    { id: 1, title: 'Welcome Bonus', type: 'welcome', amount: '100% up to $500', description: 'Get a bonus on your first deposit' },
+    { id: 2, title: 'Weekly Cashback', type: 'cashback', amount: '15%', description: 'Weekly rakeback on your losses' },
+    { id: 3, title: 'Free Spins Pack', type: 'freespins', amount: '50 FS', description: 'Free spins on selected slots' },
+    { id: 4, title: 'Reload Bonus', type: 'reload', amount: '50% up to $200', description: 'Bonus on your reload deposit' }
   ],
 
   partners: [
-    { id: 1, name: 'Stake', commission: '45%', description: 'Ведущая крипто-букмекерская платформа' },
-    { id: 2, name: 'BC.Game', commission: '50%', description: 'Крипто-казино с оригинальными играми' },
-    { id: 3, name: 'Roobet', commission: '40%', description: 'Популярная игровая платформа' },
-    { id: 4, name: 'Rollbit', commission: '55%', description: 'Инновационная крипто-игра' }
+    { id: 1, name: 'Stake', commission: '45%', description: 'Leading crypto sportsbook platform' },
+    { id: 2, name: 'BC.Game', commission: '50%', description: 'Crypto casino with original games' },
+    { id: 3, name: 'Roobet', commission: '40%', description: 'Popular gaming platform' },
+    { id: 4, name: 'Rollbit', commission: '55%', description: 'Innovative crypto game' }
   ],
 
   testimonials: [
-    { id: 1, name: 'Alex_Killer', role: 'Топ-5 лидерборда', avatar: 'AK', stars: 5, text: 'Лучшее киберспортивное сообщество, в котором я был. Классные бонусы, активные игроки и реальные призы в лидерборде.' },
-    { id: 2, name: 'NightShade', role: 'Победитель недельной гонки', avatar: 'NS', stars: 5, text: 'Выиграл еженедельную гонку и получил приз прямо tips на сайт. Всё честно и моментально. Атмосфера в Discord просто сумасшедшая.' },
-    { id: 3, name: 'CryptoKing', role: 'Участник с 2025', avatar: 'CK', stars: 5, text: 'Заработал уже больше $500 на бонусах и розыгрышах. Призы приходят как tips на сайты партнёров, без задержек. Рекомендую всем друзьям.' }
+    { id: 1, name: 'Alex_Killer', role: 'Top-5 Leaderboard', avatar: 'AK', stars: 5, text: 'The best esports community I have ever been part of. Great bonuses, active players and real prizes on the leaderboard.' },
+    { id: 2, name: 'NightShade', role: 'Weekly Race Winner', avatar: 'NS', stars: 5, text: 'Won the weekly race and got the prize sent straight to the site as tips. Fair and instant. The Discord atmosphere is just crazy.' },
+    { id: 3, name: 'CryptoKing', role: 'Member since 2025', avatar: 'CK', stars: 5, text: 'I have already earned more than $500 in bonuses and giveaways. Prizes arrive as tips on partner sites with no delays. I recommend it to all my friends.' }
   ],
 
   faq: [
-    { id: 1, q: 'Как начать участвовать в розыгрышах?', a: 'Просто зарегистрируйтесь на платформе и присоединитесь к любому активному розыгрышу на странице «Бонусы». Участие бесплатно для всех игроков.' },
-    { id: 2, q: 'Как выплачиваются призы?', a: 'Все призы выплачиваются как tips на сайтах партнёрских платформ. Выигранные средства моментально зачисляются на ваш аккаунт и доступны для игры или вывода.' },
-    { id: 3, q: 'Что такое еженедельная гонка?', a: 'Каждую неделю топ-5 игроков лидерборда разделяют призовой фонд $100. Чем больше вы играете через партнёрские ссылки, тем выше ваш рейтинг. Гонка обнуляется каждые 7 дней.' },
-    { id: 4, q: 'Как выводить выигранные призы?', a: 'Призы зачисляются как tips на ваш аккаунт партнёрской платформы, откуда их можно вывести на крипто-кошелёк или использовать для игры. Минимальная сумма вывода зависит от правил платформы.' },
-    { id: 5, q: 'Это бесплатно?', a: 'Да, регистрация и участие в сообществе абсолютно бесплатны. Мы зарабатываем на партнёрских комиссиях, когда вы используете бонусы наших партнёров.' }
+    { id: 1, q: 'How do I start joining giveaways?', a: 'Just sign up on the platform and join any active giveaway on the "Bonuses" page. Participation is free for all players.' },
+    { id: 2, q: 'How are prizes paid out?', a: 'All prizes are paid out as tips on the partner platform sites. Winnings are instantly credited to your account and available for playing or withdrawal.' },
+    { id: 3, q: 'What is the weekly race?', a: 'Every week the top-5 players on the leaderboard split a $100 prize pool. The more you play through partner links, the higher your rating. The race resets every 7 days.' },
+    { id: 4, q: 'How do I withdraw my winnings?', a: 'Prizes are credited as tips to your partner platform account, where they can be withdrawn to a crypto wallet or used for playing. The minimum withdrawal amount depends on the platform rules.' },
+    { id: 5, q: 'Is it free?', a: 'Yes, registration and community participation are absolutely free. We earn from affiliate commissions when you use our partners bonuses.' }
   ]
 };
 
@@ -331,18 +331,18 @@ class DataStore {
     if (this.cache.leaderboard && this.cache.leaderboard.list.length > 0) {
       const list = this.cache.leaderboard.list.slice(0, limit);
       const actions = [
-        (p) => `поставил $${Math.round(p.wagered || 0).toLocaleString('ru-RU')}`,
-        (p) => `повысил уровень до ${p.level || 1}`,
-        (p) => `заработал $${Math.round(p.earned || 0).toLocaleString('ru-RU')}`,
-        (p) => `${p.active ? 'активный игрок' : 'новый участник'}`,
-        (p) => `в топ-${p.rank} лидерборда`,
-        (p) => `получил бонус $${Math.round((p.earned || 0) * 0.1).toLocaleString('ru-RU')}`
+        (p) => `wagered $${Math.round(p.wagered || 0).toLocaleString('en-US')}`,
+        (p) => `reached level ${p.level || 1}`,
+        (p) => `earned $${Math.round(p.earned || 0).toLocaleString('en-US')}`,
+        (p) => `${p.active ? 'active player' : 'new member'}`,
+        (p) => `in top-${p.rank} of the leaderboard`,
+        (p) => `received a $${Math.round((p.earned || 0) * 0.1).toLocaleString('en-US')} bonus`
       ];
       return list.map((p, i) => ({
         id: p.id || i,
         user: p.username,
         action: actions[i % actions.length](p),
-        time: `${Math.floor(Math.random() * 60) + 1} мин назад`
+        time: `${Math.floor(Math.random() * 60) + 1} min ago`
       }));
     }
     return this.data.activity.slice(0, limit);

@@ -231,7 +231,7 @@ class CyberSportApp {
 
     const formatNumber = (n) => {
       if (n >= 1000000) return (n / 1000000).toFixed(1) + 'M';
-      if (n >= 1000) return n.toLocaleString('ru-RU');
+      if (n >= 1000) return n.toLocaleString('en-US');
       return String(n);
     };
 
@@ -239,19 +239,19 @@ class CyberSportApp {
       container.innerHTML = `
         <div class="stat-item">
           <div class="stat-number">${formatNumber(stats.players)}+</div>
-          <div class="stat-label">Игроков</div>
+          <div class="stat-label">Players</div>
         </div>
         <div class="stat-item">
           <div class="stat-number">$${formatNumber(stats.totalWagered)}+</div>
-          <div class="stat-label">Всего поставлено</div>
+          <div class="stat-label">Total Wagered</div>
         </div>
         <div class="stat-item">
           <div class="stat-number">$${formatNumber(stats.totalEarned || stats.bonusesPaid)}+</div>
-          <div class="stat-label">Заработано</div>
+          <div class="stat-label">Earned</div>
         </div>
         <div class="stat-item">
           <div class="stat-number">24/7</div>
-          <div class="stat-label">Активность</div>
+          <div class="stat-label">Activity</div>
         </div>
       `;
     });
@@ -268,8 +268,8 @@ class CyberSportApp {
         container.innerHTML = `
           <div class="empty-state">
             <div class="empty-state-icon">🎁</div>
-            <h3>Нет активных розыгрышей</h3>
-            <p>Следите за обновлениями — новые розыгрыши появляются каждую неделю.</p>
+            <h3>No active giveaways</h3>
+            <p>Stay tuned — new giveaways drop every week.</p>
           </div>
         `;
         return;
@@ -282,22 +282,22 @@ class CyberSportApp {
         const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
         const mins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
         const timeLeft = days > 0
-          ? `${days}д ${String(hours).padStart(2, '0')}ч`
+          ? `${days}d ${String(hours).padStart(2, '0')}h`
           : hours > 0
-            ? `${hours}ч ${String(mins).padStart(2, '0')}м`
-            : `${mins}м`;
+            ? `${hours}h ${String(mins).padStart(2, '0')}m`
+            : `${mins}m`;
         return `
           <div class="giveaway-card">
             <div class="giveaway-header">
               <h3>${g.title}</h3>
-              <span class="status-badge">Активен</span>
+              <span class="status-badge">Active</span>
             </div>
             <p class="giveaway-desc">${g.description}</p>
             <div class="giveaway-timer">
               <i data-lucide="clock" style="width: 15px; height: 15px;"></i>
-              <span>${timeLeft} осталось</span>
+              <span>${timeLeft} left</span>
             </div>
-            <a href="#" class="btn-primary" style="font-size: 0.875rem; padding: 0.625rem 1.5rem;">Участвовать</a>
+            <a href="#" class="btn-primary" style="font-size: 0.875rem; padding: 0.625rem 1.5rem;">Participate</a>
           </div>
         `;
       }).join('');
@@ -326,7 +326,7 @@ class CyberSportApp {
         return `
           <div class="testimonial-card">
             <div class="testimonial-stars">${stars}</div>
-            <p class="testimonial-text">«${t.text}»</p>
+            <p class="testimonial-text">"${t.text}"</p>
             <div class="testimonial-author">
               <div class="testimonial-avatar">${t.avatar}</div>
               <div>
@@ -375,7 +375,7 @@ class CyberSportApp {
       container.innerHTML = `
         <div class="loading-state">
           <div class="loading-spinner"></div>
-          <p>Загрузка лидерборда...</p>
+          <p>Loading leaderboard...</p>
         </div>
       `;
     });
@@ -404,8 +404,8 @@ class CyberSportApp {
         container.innerHTML = `
           <div class="empty-state">
             <div class="empty-state-icon">🏆</div>
-            <h3>Лидерборд пуст</h3>
-            <p>Станьте первым игроком в рейтинге!</p>
+            <h3>Leaderboard is empty</h3>
+            <p>Be the first player on the ranking!</p>
           </div>
         `;
         return;
@@ -419,11 +419,11 @@ class CyberSportApp {
 
         if (isTable) {
           const wageredFormatted = hasRealData
-            ? '$' + player.wagered.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-            : player.score.toLocaleString('ru-RU');
+            ? '$' + player.wagered.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+            : player.score.toLocaleString('en-US');
 
           const earnedFormatted = hasRealData
-            ? '$' + player.earned.toLocaleString('ru-RU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+            ? '$' + player.earned.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
             : '';
 
           let avatarHtml = '';
@@ -464,8 +464,8 @@ class CyberSportApp {
         else if (player.rank === 3) rankClass = 'rank-bronze';
 
         const scoreDisplay = hasRealData
-          ? '$' + player.wagered.toLocaleString('ru-RU', { maximumFractionDigits: 0 })
-          : player.score.toLocaleString('ru-RU');
+          ? '$' + player.wagered.toLocaleString('en-US', { maximumFractionDigits: 0 })
+          : player.score.toLocaleString('en-US');
 
         let avatarHtml = '';
         if (hasAvatar) {
@@ -522,8 +522,8 @@ class CyberSportApp {
           `;
         }
         const wagered = player.wagered !== undefined
-          ? '$' + player.wagered.toLocaleString('ru-RU', { maximumFractionDigits: 0 })
-          : (player.score || 0).toLocaleString('ru-RU');
+          ? '$' + player.wagered.toLocaleString('en-US', { maximumFractionDigits: 0 })
+          : (player.score || 0).toLocaleString('en-US');
         const avatarHtml = player.avatarUrl
           ? `<img src="${player.avatarUrl}" alt="${player.username}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`
           : (player.avatar || player.username?.[0] || '?');
@@ -552,8 +552,8 @@ class CyberSportApp {
         container.innerHTML = `
           <div class="empty-state">
             <div class="empty-state-icon">🎁</div>
-            <h3>Нет доступных бонусов</h3>
-            <p>Новые бонусы появляются скоро — следите за обновлениями.</p>
+            <h3>No bonuses available</h3>
+            <p>New bonuses are coming soon — stay tuned.</p>
           </div>
         `;
         return;
@@ -565,7 +565,7 @@ class CyberSportApp {
           <h3 class="bonus-title">${b.title}</h3>
           <div class="bonus-amount">${b.amount}</div>
           <p class="bonus-desc">${b.description}</p>
-          <a href="#" class="btn-primary" style="font-size: 0.875rem; padding: 0.625rem 1.5rem;">Получить</a>
+          <a href="#" class="btn-primary" style="font-size: 0.875rem; padding: 0.625rem 1.5rem;">Claim</a>
         </div>
       `).join('');
     });
@@ -582,8 +582,8 @@ class CyberSportApp {
         container.innerHTML = `
           <div class="empty-state">
             <div class="empty-state-icon">🤝</div>
-            <h3>Нет партнёров</h3>
-            <p>Мы активно работаем над добавлением новых партнёров.</p>
+            <h3>No partners</h3>
+            <p>We are actively working on adding new partners.</p>
           </div>
         `;
         return;
@@ -592,9 +592,9 @@ class CyberSportApp {
       container.innerHTML = partners.map(p => `
         <div class="partner-card">
           <div class="partner-name">${p.name}</div>
-          <div class="partner-commission">${p.commission} <span>комиссия</span></div>
+          <div class="partner-commission">${p.commission} <span>commission</span></div>
           <p class="partner-desc">${p.description}</p>
-          <a href="#" class="btn-ghost" style="font-size: 0.875rem; padding: 0.625rem 1.5rem;">Подробнее</a>
+          <a href="#" class="btn-ghost" style="font-size: 0.875rem; padding: 0.625rem 1.5rem;">Learn more</a>
         </div>
       `).join('');
     });
@@ -611,8 +611,8 @@ class CyberSportApp {
         container.innerHTML = `
           <div class="empty-state">
             <div class="empty-state-icon">⚔️</div>
-            <h3>Кланы ещё не созданы</h3>
-            <p>Станьте основателем первого клана!</p>
+            <h3>No clans created yet</h3>
+            <p>Become the founder of the first clan!</p>
           </div>
         `;
         return;
@@ -628,15 +628,15 @@ class CyberSportApp {
               </div>
               <div>
                 <h3>${c.name}</h3>
-                <div class="clan-members">${c.members.toLocaleString('ru-RU')} участников</div>
+                <div class="clan-members">${c.members.toLocaleString('en-US')} members</div>
               </div>
             </div>
           </div>
           <div class="clan-score">
             <span class="clan-score-label">XP</span>
-            <span class="clan-score-value">${c.score.toLocaleString('ru-RU')}</span>
+            <span class="clan-score-value">${c.score.toLocaleString('en-US')}</span>
           </div>
-          <a href="#" class="btn-ghost" style="width: 100%; justify-content: center; font-size: 0.875rem; padding: 0.625rem 1.5rem;">Присоединиться</a>
+          <a href="#" class="btn-ghost" style="width: 100%; justify-content: center; font-size: 0.875rem; padding: 0.625rem 1.5rem;">Join</a>
         </div>
       `).join('');
     });
@@ -653,8 +653,8 @@ class CyberSportApp {
         container.innerHTML = `
           <div class="empty-state" style="padding: 2rem 1rem;">
             <div class="empty-state-icon">📋</div>
-            <h3>Нет активности</h3>
-            <p style="font-size: 0.8125rem;">Пока никто не совершал действий.</p>
+            <h3>No activity</h3>
+            <p style="font-size: 0.8125rem;">No one has performed any actions yet.</p>
           </div>
         `;
         return;
