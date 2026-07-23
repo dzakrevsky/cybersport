@@ -34,17 +34,8 @@ const MOCK_DATA = {
       status: 'active',
       description: 'Призовой фонд $5,000. Участвуйте в еженедельных гонках и занимайте призовые места.',
       prize: '$5,000',
-      endDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000 + 14 * 60 * 60 * 1000),
+      endDate: new Date(Date.now() + 6 * 24 * 60 * 60 * 1000 + 14 * 60 * 60 * 1000),
       participants: 342
-    },
-    {
-      id: 'g2',
-      title: 'BC.Game Monthly',
-      status: 'active',
-      description: 'Ежемесячный розыгрыш $10,000. Больше играете — больше шансов на победу.',
-      prize: '$10,000',
-      endDate: new Date(Date.now() + 18 * 24 * 60 * 60 * 1000 + 6 * 60 * 60 * 1000),
-      participants: 891
     }
   ],
 

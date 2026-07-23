@@ -276,7 +276,16 @@ class CyberSportApp {
       }
 
       container.innerHTML = giveaways.map(g => {
-        const daysLeft = Math.ceil((g.endDate - new Date()) / (1000 * 60 * 60 * 24));
+        const endDate = g.endDate instanceof Date ? g.endDate : new Date(g.endDate);
+        const diffMs = Math.max(0, endDate.getTime() - Date.now());
+        const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diffMs % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const mins = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+        const timeLeft = days > 0
+          ? `${days}д ${String(hours).padStart(2, '0')}ч`
+          : hours > 0
+            ? `${hours}ч ${String(mins).padStart(2, '0')}м`
+            : `${mins}м`;
         return `
           <div class="giveaway-card">
             <div class="giveaway-header">
@@ -286,7 +295,7 @@ class CyberSportApp {
             <p class="giveaway-desc">${g.description}</p>
             <div class="giveaway-timer">
               <i data-lucide="clock" style="width: 15px; height: 15px;"></i>
-              <span>${daysLeft}д осталось</span>
+              <span>${timeLeft} осталось</span>
             </div>
             <a href="#" class="btn-primary" style="font-size: 0.875rem; padding: 0.625rem 1.5rem;">Участвовать</a>
           </div>
