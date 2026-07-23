@@ -196,8 +196,17 @@ class DataStore {
 
     const sources = API_SOURCES.filter(s => s.enabled);
     const nowDate = new Date();
-    const fromDate = customFrom ? new Date(customFrom) : nowDate;
-    const toDate = customTo ? new Date(customTo) : new Date(nowDate.getTime() + 7 * 24 * 60 * 60 * 1000);
+    let fromDate, toDate;
+    if (customFrom !== undefined) {
+      fromDate = new Date(customFrom);
+      toDate = customTo ? new Date(customTo) : nowDate;
+    } else {
+      // Weekly leaderboard: from the start of current period to now
+      const periodEnd = this.getPeriodEnd();
+      const periodMs = API_CONFIG.periodDays * 24 * 60 * 60 * 1000;
+      fromDate = new Date(periodEnd.getTime() - periodMs);
+      toDate = nowDate;
+    }
 
     const results = await Promise.allSettled(
       sources.map(source => this._fetchSource(source, { take, skip, order, from: fromDate, to: toDate }))
