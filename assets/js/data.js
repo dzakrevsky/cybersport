@@ -11,7 +11,9 @@ const API_SOURCES = [
 
 const API_CONFIG = {
   leaderboardTake: 10,
-  cacheMs: 60000
+  cacheMs: 60000,
+  weeklyPrizePool: 100,
+  periodDays: 7
 };
 
 const MOCK_DATA = {
@@ -175,10 +177,10 @@ class DataStore {
 
     const sources = API_SOURCES.filter(s => s.enabled);
     const nowDate = new Date();
-    const weekAgo = new Date(nowDate.getTime() - 7 * 24 * 60 * 60 * 1000);
+    const weekLater = new Date(nowDate.getTime() + 7 * 24 * 60 * 60 * 1000);
 
     const results = await Promise.allSettled(
-      sources.map(source => this._fetchSource(source, { take, skip, order, from: weekAgo, to: nowDate }))
+      sources.map(source => this._fetchSource(source, { take, skip, order, from: nowDate, to: weekLater }))
     );
 
     const successResults = results
@@ -280,6 +282,19 @@ class DataStore {
       sourceCount: sourceResults.length,
       totalSources: API_SOURCES.filter(s => s.enabled).length
     };
+  }
+
+  getWeeklyPrizePool() {
+    return API_CONFIG.weeklyPrizePool;
+  }
+
+  getPeriodEnd() {
+    const now = Date.now();
+    if (this.cache.periodEnd && now < this.cache.periodEnd - API_CONFIG.periodDays * 24 * 60 * 60 * 1000 + 1000) {
+      return new Date(this.cache.periodEnd);
+    }
+    this.cache.periodEnd = now + API_CONFIG.periodDays * 24 * 60 * 60 * 1000;
+    return new Date(this.cache.periodEnd);
   }
 
   getLeaderboard(limit = 10) {

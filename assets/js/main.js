@@ -21,6 +21,7 @@ class CyberSportApp {
     this.renderPartners();
     this.renderClans();
     this.renderActivity();
+    this.renderPodium();
 
     const hasLeaderboard = document.querySelector('[data-leaderboard]');
     const hasStats = document.querySelector('[data-stats]');
@@ -100,7 +101,7 @@ class CyberSportApp {
 
   initCountdown() {
     const countdownContainer = document.getElementById('countdown');
-    
+
     if (!countdownContainer) return;
 
     const daysEl = document.getElementById('cd-days');
@@ -108,19 +109,11 @@ class CyberSportApp {
     const minsEl = document.getElementById('cd-mins');
     const secsEl = document.getElementById('cd-secs');
 
-    function getNextMonday() {
-      const now = new Date();
-      const dayOfWeek = now.getUTCDay();
-      const daysUntilMonday = dayOfWeek === 0 ? 1 : (8 - dayOfWeek);
-      const monday = new Date(now);
-      monday.setUTCDate(monday.getUTCDate() + daysUntilMonday);
-      monday.setUTCHours(0, 0, 0, 0);
-      return monday;
-    }
+    const targetDate = window.DataStore ? window.DataStore.getPeriodEnd() : null;
 
     function updateCountdown() {
       const now = new Date();
-      const target = getNextMonday();
+      const target = targetDate || new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
       let diff = Math.max(0, Math.floor((target - now) / 1000));
 
       const days = Math.floor(diff / 86400);
@@ -370,6 +363,7 @@ class CyberSportApp {
     const result = await window.DataStore.fetchLeaderboard(options);
     this.renderStats();
     this.renderLeaderboard();
+    this.renderPodium();
     this.renderActivity();
 
     containers.forEach(container => {
@@ -479,6 +473,52 @@ class CyberSportApp {
     });
 
     this.initLucideIcons();
+  }
+
+  renderPodium() {
+    const containers = document.querySelectorAll('[data-podium]');
+    if (!containers.length || !window.DataStore) return;
+
+    const topPlayers = window.DataStore.getLeaderboard(3);
+    const prizePool = window.DataStore.getWeeklyPrizePool();
+    const prizes = [Math.round(prizePool * 0.5), Math.round(prizePool * 0.3), Math.round(prizePool * 0.2)];
+
+    const order = [1, 0, 2];
+    const podiumPlayers = order.map(idx => topPlayers[idx] || null);
+
+    containers.forEach(container => {
+      container.innerHTML = podiumPlayers.map((player, displayIdx) => {
+        const rank = order[displayIdx] + 1;
+        if (!player) {
+          return `
+            <div class="podium-card ${rank === 1 ? 'first' : ''}">
+              <div class="podium-rank">${rank}</div>
+              <div class="podium-avatar">?</div>
+              <div class="podium-name">—</div>
+              <div class="podium-coins">—</div>
+              <div class="podium-label">wagered</div>
+              <div class="podium-prize">$${prizes[order[displayIdx]]}</div>
+            </div>
+          `;
+        }
+        const wagered = player.wagered !== undefined
+          ? '$' + player.wagered.toLocaleString('ru-RU', { maximumFractionDigits: 0 })
+          : (player.score || 0).toLocaleString('ru-RU');
+        const avatarHtml = player.avatarUrl
+          ? `<img src="${player.avatarUrl}" alt="${player.username}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`
+          : (player.avatar || player.username?.[0] || '?');
+        return `
+          <div class="podium-card ${rank === 1 ? 'first' : ''}">
+            <div class="podium-rank">${rank}</div>
+            <div class="podium-avatar">${avatarHtml}</div>
+            <div class="podium-name">${player.username}</div>
+            <div class="podium-coins">${wagered}</div>
+            <div class="podium-label">wagered</div>
+            <div class="podium-prize">$${prizes[order[displayIdx]]}</div>
+          </div>
+        `;
+      }).join('');
+    });
   }
 
   renderBonuses() {
