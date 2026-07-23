@@ -20,6 +20,7 @@ const MOCK_DATA = {
   stats: {
     players: 12547,
     bonusesPaid: 50000,
+    totalEarned: 50000,
     clans: 3,
     active247: true,
     activeGiveaways: 3,
@@ -119,7 +120,11 @@ class DataStore {
 
   getStats() {
     if (this.cache.allTimeStats) {
-      return this.cache.allTimeStats;
+      const s = this.cache.allTimeStats;
+      // If the cached stats look like a zero-value fallback, prefer mock stats.
+      if (s.totalWagered > 0 || s.totalEarned > 0 || s.players > this.data.leaderboard.length) {
+        return s;
+      }
     }
     if (this.cache.leaderboard && this.cache.leaderboard.list.length > 0) {
       return this.getComputedStats();
@@ -204,11 +209,19 @@ class DataStore {
 
     if (successResults.length === 0) {
       console.warn('All API sources failed, using mock data');
-      return {
+      const fallback = {
         totalCount: this.data.leaderboard.length,
         filteredCount: this.data.leaderboard.length,
-        list: this.data.leaderboard
+        list: this.data.leaderboard,
+        isFallback: true
       };
+      // Cache fallback lightly but don't let it overwrite real all-time stats.
+      this.cache[cacheKey] = fallback;
+      this.cache[expiryKey] = now + 15000;
+      if (isAllTime) {
+        this.cache.allTimeStats = this.data.stats;
+      }
+      return fallback;
     }
 
     const merged = this._mergeLeaderboards(successResults, { take, skip, order });
