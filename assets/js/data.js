@@ -165,9 +165,9 @@ class DataStore {
   }
 
   async fetchStats() {
+    const allTimeFrom = new Date('2020-01-01T00:00:00Z');
     const now = new Date();
-    const from = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-    return this.fetchLeaderboard({ from, to: now, take: 100, useCache: true });
+    return this.fetchLeaderboard({ from: allTimeFrom, to: now, take: 100, useCache: true });
   }
 
   getGiveaways() {
@@ -201,10 +201,9 @@ class DataStore {
       fromDate = new Date(customFrom);
       toDate = customTo ? new Date(customTo) : nowDate;
     } else {
-      // Weekly leaderboard: from the start of current period to now
-      const periodEnd = this.getPeriodEnd();
+      // Weekly leaderboard: last 7 days rolling window
       const periodMs = API_CONFIG.periodDays * 24 * 60 * 60 * 1000;
-      fromDate = new Date(periodEnd.getTime() - periodMs);
+      fromDate = new Date(nowDate.getTime() - periodMs);
       toDate = nowDate;
     }
 
